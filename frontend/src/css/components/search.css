@@ -1,0 +1,46 @@
+search {
+      display: flex;
+      align-items: center;
+      position: relative;
+      margin-left: 5rem;
+
+      & > svg {
+            position: absolute;
+            inset-inline-start: 1em;
+      }
+
+      & > input {
+            appearance: none;
+            caret-color: var(--text-1);
+            inline-size: 100%;
+            block-size: 2.5rem;
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.1;
+            color: var(--text-1);
+            background: white;
+            padding-inline: 3rem 1rem;
+            outline: none;
+            border: none;
+            border-radius: 3rem;
+      }
+
+      /* on focus, highlight sibling svg paths */
+      & > input:focus ~ svg > path {
+            fill: var(--brand-primary);
+      }
+
+      @media (width >= 500px) {
+            & > button {
+                  display: none;
+            }
+      }
+
+      @media (width <= 500px) {
+            justify-self: flex-end;
+
+            & > :is(svg, input) {
+                  display: none;
+            }
+      }
+}

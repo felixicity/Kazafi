@@ -1,0 +1,165 @@
+#product {
+      display: grid;
+      grid-template-columns: repeat(28, 1fr);
+      background: #f3f2ed;
+
+      .img-container {
+            grid-column: 3/20;
+            background: #ebe9e3;
+
+            img {
+                  transition: display 5s ease-in allow-discrete;
+            }
+
+            /* height: 100dvh; */
+      }
+
+      .product-details {
+            grid-column: 21/-2;
+            margin-block-start: 5rem;
+
+            h2.product-title {
+                  font-size: 2.2rem;
+                  line-height: 1;
+                  margin-block-end: 0.8rem;
+                  font-weight: bolder;
+            }
+
+            .product-price {
+                  display: flex;
+                  align-items: center;
+                  gap: 2rem;
+
+                  span:first-child {
+                        font-size: 1.2rem;
+                        color: rgb(194, 3, 3);
+                        text-decoration: line-through;
+                  }
+
+                  span:last-child {
+                        font-size: 1.5rem;
+                        margin-block-end: 0.8rem;
+                        font-weight: bold;
+                  }
+            }
+
+            h3 {
+                  text-transform: uppercase;
+                  font-weight: 500;
+                  font-size: 0.8rem;
+            }
+
+            .product-desc {
+                  margin-block: 0.8rem;
+            }
+
+            .product-colors {
+                  margin-block: 1.2rem;
+
+                  .available-colors {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        margin-block-start: 0.8rem;
+
+                        .color {
+                              width: 24px;
+                              aspect-ratio: 1;
+                              border-radius: 50%;
+                              cursor: pointer;
+                              transition: 0.2s ease-out;
+
+                              &:focus-within {
+                                    border: 2px solid green;
+                                    transform: scale(1.2);
+                              }
+
+                              &:hover {
+                                    transform: scale(1.2);
+                              }
+                        }
+                  }
+            }
+            .product-sizes {
+                  margin-block: 1.2rem;
+
+                  .size-header {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        a {
+                              text-decoration: none;
+                              border-bottom: 1px solid #ccc;
+                              padding-bottom: 0.2rem;
+                              font-size: 0.9rem;
+                              color: inherit;
+                        }
+                  }
+
+                  .available-sizes {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                        margin-block-start: 0.8rem;
+
+                        .size {
+                              width: 40px;
+                              display: grid;
+                              place-items: center;
+                              aspect-ratio: 1;
+                              border-radius: 50%;
+                              border: 1px solid #ccc;
+                        }
+                  }
+            }
+            .actions {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  margin-block: 2rem;
+
+                  .adjust-qty {
+                        background: #fbfaf9;
+                        padding-block: 0.5rem;
+                        padding-inline: 1.2rem;
+                        display: flex;
+                        align-items: center;
+                        gap: 2rem;
+                        border-radius: 2rem;
+
+                        span {
+                              cursor: pointer;
+                              font-size: 1.2rem;
+                        }
+
+                        span:not(:nth-child(2)) {
+                              font-size: 1.75rem;
+                        }
+                  }
+                  a {
+                        padding: 1rem 3rem;
+                        text-decoration: none;
+                        color: white;
+                        background: #000;
+                        border-radius: 2.5rem;
+                  }
+            }
+            .other-details {
+                  margin-block: 1.6rem;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 1.4rem;
+
+                  .detail-group {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+
+                        p {
+                              font-weight: bold;
+                        }
+                  }
+            }
+      }
+}

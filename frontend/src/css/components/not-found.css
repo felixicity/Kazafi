@@ -1,0 +1,20 @@
+#not-found {
+      display: grid;
+      place-content: center;
+      place-items: center;
+      min-height: 100dvh;
+
+      #status-code {
+            font-size: 8rem;
+            font-weight: bolder;
+      }
+
+      a {
+            text-decoration: none;
+            font-weight: bold;
+      }
+
+      h1 {
+            margin-block: 1rem;
+      }
+}

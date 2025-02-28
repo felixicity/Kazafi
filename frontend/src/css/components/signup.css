@@ -1,0 +1,101 @@
+.signup {
+      display: grid;
+      grid-template-columns: 100px repeat(8, 1fr) 100px;
+      margin-block-start: 4rem;
+
+      .signup_aside {
+            grid-column: 2/5;
+            font-size: small;
+            color: var(--text-3);
+
+            li {
+                  list-style-type: none;
+
+                  &:not(:first-child) {
+                        margin-block-start: 1rem;
+                  }
+            }
+
+            h3 {
+                  font-weight: bolder;
+                  color: var(--text-1);
+                  border-left: 5px solid black;
+                  margin-left: -1.5rem;
+                  padding-inline-start: 1rem;
+            }
+      }
+}
+
+.form {
+      border-radius: 15px;
+      box-shadow: 4px 4px 5px 5px #ccc;
+      grid-column: 6/-2;
+
+      .signup-form {
+            padding: 0rem 4rem;
+            padding-block-start: 2.5rem;
+
+            h2 {
+                  font-size: 1.35rem;
+                  color: (--text-1);
+            }
+
+            .form-group {
+                  margin-block-start: 1rem;
+
+                  label {
+                        display: block;
+                        font-size: 0.77rem;
+                        font-weight: bolder;
+                        color: var(--text-2);
+                        margin-block-end: 0.4rem;
+                  }
+
+                  input:not([type="checkbox"]) {
+                        width: 100%;
+                        padding: 0.5rem 1rem;
+                        font-size: 1rem;
+                  }
+            }
+
+            .get-newsletter {
+                  display: flex;
+                  align-items: start;
+                  gap: 1rem;
+                  font-size: 0.72rem;
+                  font-weight: bold;
+                  color: var(--text-3);
+
+                  input[type="checkbox"] {
+                        cursor: pointer;
+                  }
+            }
+
+            button {
+                  inline-size: 100%;
+                  padding-block: 01rem;
+                  margin-block-start: 1rem;
+                  margin-block-end: 2rem;
+                  border: none;
+                  color: white;
+                  cursor: pointer;
+                  border-radius: 5px;
+                  background-color: black;
+
+                  &:disabled {
+                        background-color: color-mix(in srgb, red 40%, transparent 80%);
+                        cursor: not-allowed;
+                  }
+            }
+      }
+
+      .login-cta {
+            padding-block-start: 0.7rem;
+            padding-block-end: 1rem;
+            font-size: 0.8rem;
+            background-color: var(--soft-shadow);
+            text-align: center;
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+      }
+}

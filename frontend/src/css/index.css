@@ -1,5 +1,35 @@
-body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
-            "Open Sans", "Helvetica Neue", sans-serif;
-}
+@layer system, base, utilities, components, animations;
+
+@import "../css/global/_vars.css" layer(system.props);
+
+@import "../css/global/page.css" layer(base);
+@import "../css/global/typography.css" layer(base);
+/* @import "../css/global/focus.css" layer(base); */
+
+@import "../css/utilities/wrapper.css" layer(utilities);
+/*@import "../css/animations/generic.css" layer(animations); */
+
+/* @import "../css/components/body.css" layer(components);
+@import "../css/components/nav.css" layer(components);
+@import "../css/components/header.css" layer(components);
+@import "../css/components/main.css" layer(components);
+@import "../css/components/article.css" layer(components);
+@import "../css/components/brand.css" layer(components);
+@import "../css/components/link.css" layer(components);
+@import "../css/components/aside.css" layer(components);
+@import "../css/components/button.css" layer(components);*/
+@import "../css/components/login.css" layer(components);
+@import "../css/components/search.css" layer(components);
+@import "../css/components/signup.css" layer(components);
+/*@import "../css/components/product-card.css" layer(components);*/
+@import "../css/components/not-found.css" layer(components);
+@import "../css/components/svg.css" layer(components);
+@import "../css/components/product.css" layer(components);
+/*@import "../css/components/most-popular-scroller.css" layer(components);
+@import "../css/components/fresh-releases-scroller.css" layer(components);
+@import "../css/components/super-hot-scroller.css" layer(components);
+@import "../css/components/black-friday-scroller.css" layer(components);*/
+@import "../css/components/featured.css" layer(components);
+@import "../css/components/footer.css" layer(components);
+/*@import "../css/components/scroll-progress.css" layer(components);
+@import "../css/components/lightbox.css" layer(components); */

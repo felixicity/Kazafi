@@ -1,0 +1,58 @@
+header {
+      display: flex;
+      align-items: center;
+      margin-block: 0rem;
+      margin-block: 1rem;
+}
+
+nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+
+      ul {
+            display: flex;
+            list-style: none;
+            font-weight: 550;
+            font-size: 1rem;
+
+            li {
+                  margin-right: 2rem;
+                  cursor: pointer;
+            }
+      }
+
+      .icon-button-list {
+            display: flex;
+
+            > *:not(.login-btn) {
+                  margin-right: 1rem;
+            }
+
+            button[title="Cart"] {
+                  background-color: transparent;
+                  border: none;
+                  cursor: pointer;
+            }
+      }
+}
+
+.secondary-nav > ul {
+      display: flex;
+      justify-content: flex-end;
+      list-style-type: none;
+      gap: 1rem;
+      padding-block-start: 1rem;
+
+      li {
+            word-spacing: -2px;
+            font-size: 0.89rem;
+            cursor: pointer;
+            transition: text-decoration 5s linear;
+      }
+
+      li:hover {
+            text-decoration: underline;
+      }
+}

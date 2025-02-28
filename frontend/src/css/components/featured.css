@@ -1,0 +1,49 @@
+section {
+      margin-block: 4rem;
+
+      h2 {
+            font-size: 2.05rem;
+            margin-block: 2rem;
+      }
+
+      .featured-products {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+
+            .featured-card {
+                  position: relative;
+                  /* border: 1px solid #555; */
+                  aspect-ratio: 1;
+                  border-radius: 15px;
+                  place-items: center;
+                  box-shadow: var(--depth-5);
+
+                  img {
+                        inline-size: 100%;
+                        border-radius: 15px;
+                  }
+
+                  p,
+                  button {
+                        position: absolute;
+                  }
+
+                  p {
+                        font-weight: bold;
+                        padding: 1rem 0.5rem;
+                  }
+
+                  button {
+                        bottom: 10%;
+                        left: 25%;
+                        padding: 0.5rem 1.4rem;
+                        background: black;
+                        border: none;
+                        color: white;
+                        border-radius: 7.5px;
+                        cursor: pointer;
+                  }
+            }
+      }
+}
