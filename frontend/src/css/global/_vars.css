@@ -1,11 +1,13 @@
 :root {
       --primary-accent: #3a5a40;
       --secondary-accent: #2b3a42;
+      --brand-black: #090909;
       --muted-black: #222222;
       --dusty-gold: #b2996e;
       --dusty-gold-1: #997435;
       --dusty-gold-dark: #604516;
       --muted-olive-green: #a6a57a;
+      --fading-yellow: #f1f2a1;
       --terracotta: #c16e4d;
       --slight-warm-white: #f5f3ef;
       --section-bg-1: #e6e4db;

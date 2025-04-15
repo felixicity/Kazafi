@@ -10,8 +10,6 @@
             img {
                   transition: display 5s ease-in allow-discrete;
             }
-
-            /* height: 100dvh; */
       }
 
       .product-details {

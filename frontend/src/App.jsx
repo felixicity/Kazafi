@@ -9,6 +9,7 @@ import About from "./pages/About";
 import Shop from "./pages/Shop";
 import Home from "./pages/Home";
 import AdminPage from "./pages/Admin";
+import AdminDashboardOverview from "./components/AdminDashboardOverview";
 import NotFound from "./pages/NotFound";
 import Product from "./pages/Product";
 import HomeLayout from "./components/HomeLayout";
@@ -25,11 +26,13 @@ const router = createBrowserRouter(
                         <Route path="product/:productId" element={<Product />} />
                   </Route>
                   <Route path="login" element={<Login />} />
-                  <Route path="Signup" element={<Signup />} />
+                  <Route path="signup" element={<Signup />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="cart" element={<Cart />} />
                   <Route path="order" element={<Order />} />
-                  <Route path="admin" element={<AdminPage />} />
+                  <Route path="admin" element={<AdminPage />}>
+                        <Route index element={<AdminDashboardOverview />} />
+                  </Route>
                   <Route path="*" element={<NotFound />} />
             </Route>
       )

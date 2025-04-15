@@ -10,10 +10,10 @@ import { protectMiddleware } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // Add a product to the wishlist
-router.post("/add/:productid", protectMiddleware, addProductToWishlist);
+router.post("/add", protectMiddleware, addProductToWishlist);
 
 // Remove a product from the wishlist
-router.delete("/remove/:productid", protectMiddleware, removeProductFromWishlist);
+router.delete("/remove", protectMiddleware, removeProductFromWishlist);
 
 // Get all products in the user's wishlist
 router.get("/", protectMiddleware, getWishlist);

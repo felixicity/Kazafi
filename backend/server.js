@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import userRoutes from "./routes/userRouter.js";
 import productRoutes from "./routes/productRouter.js";
@@ -19,6 +20,7 @@ const App = express();
 const port = process.env.PORT;
 
 App.use(express.json());
+App.use(cors());
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
 

@@ -52,7 +52,7 @@ export const updateCartItem = async (req, res) => {
       const userId = req.user.id;
 
       try {
-            const user = await User.findById(userid);
+            const user = await User.findById(userId);
             const item = user.cart.id(itemId);
 
             if (!item) {

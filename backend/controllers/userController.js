@@ -8,6 +8,7 @@ import { generateToken } from "../utils.js";
 const registerUser = async (req, res) => {
       // Collect the information from the users request body
       const { name, email, password } = req.body;
+
       try {
             // Check the database to ensure that user is new
             const userExists = await User.findOne({ email });
@@ -58,13 +59,13 @@ const loginUser = async (req, res) => {
             const user = await User.findOne({ email });
 
             if (!user) {
-                  return res.status(400).json({ message: "Invalid credentials" });
+                  return res.status(400).json({ message: "Invalid email credentials" });
             }
 
             // Check password
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                  return res.status(400).json({ message: "Invalid credentials" });
+                  return res.status(400).json({ message: "Invalid password credentials" });
             }
 
             // Generate JWT

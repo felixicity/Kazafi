@@ -1,22 +1,30 @@
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Featured from "../components/Featured";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import "../css/index.css";
 
 const Home = () => {
+      const { userInfo } = useSelector((state) => state.auth);
+      const dispatch = useDispatch();
       return (
             <>
                   <div className="header">
                         <div className="secondary-nav wrapper">
                               <ul>
-                                    <li title="sign in">Sign in</li>
+                                    {!userInfo && (
+                                          <li title="sign in">
+                                                <Link to="/signup">Sign up</Link>
+                                          </li>
+                                    )}
                                     <li title="make enquires">Kazafi Help Center</li>
                                     <li title="about us">About Us</li>
                                     <li title="change currency">Currency</li>
                                     <li title="change language">Language</li>
                               </ul>
                         </div>
-                        <Navigation />
+                        <Navigation userInfo={userInfo} dispatch={dispatch} />
                         <main className="wrapper">
                               <div className="hero">
                                     <em>

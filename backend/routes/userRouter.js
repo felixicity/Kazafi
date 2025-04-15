@@ -42,6 +42,6 @@ router.get("/", protectMiddleware, adminMiddleware, getAllUsers);
 router.put("/profile", protectMiddleware, updateUserProfile);
 
 // Logout route (clear JWT cookie)
-router.get("/logout", logoutUser);
+router.post("/logout", logoutUser);
 
 export default router;

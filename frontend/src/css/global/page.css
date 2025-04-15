@@ -33,8 +33,7 @@ img {
 
 .header {
       background: var(--slight-warm-white);
-      height: 89vh;
-      max-height: 100dvh;
+      min-height: 89vh;
 }
 
 main {
@@ -79,8 +78,8 @@ main {
 
                   &.secondary-cta {
                         color: black;
-                        background-color: var(--soft-shadow);
-
+                        /* background-color: var(--soft-shadow); */
+                        background-color: var(--fading-yellow);
                         &:hover {
                               border: 2px solid var(--text-1);
                         }

@@ -1,3 +1,10 @@
+import { Link, useNavigate } from "react-router-dom";
+import Navigation from "../components/Navigation";
+import Footer from "../components/Footer";
+import { useRegisterMutation } from "../slices/user/usersApiSlice";
+import { setCredentials } from "../slices/user/clientAuthSlice";
+import { useDispatch } from "react-redux";
+
 const steps = [
       {
             title: "Get started quickly",
@@ -20,8 +27,38 @@ const steps = [
 ];
 
 const Signup = () => {
+      const navigate = useNavigate();
+      const dispatch = useDispatch();
+
+      const [register, { isLoading }] = useRegisterMutation();
+
+      const handleRegister = async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const values = [...formData.values()];
+
+            const data = {
+                  email: values[0],
+                  name: values[1],
+                  password: values[2],
+                  country: values[3],
+                  newsletter: values[5] === "on" ? "true" : "false",
+            };
+
+            try {
+                  const { email, name, password, country } = data;
+
+                  const res = await register({ email, name, password, country });
+                  dispatch(setCredentials({ ...res }));
+                  navigate("/");
+            } catch (error) {
+                  console.log(error.message);
+            }
+      };
+
       return (
             <>
+                  <Navigation />
                   <div className="signup wrapper">
                         <div className="signup_aside">
                               <div className="steps_to_use">
@@ -36,7 +73,7 @@ const Signup = () => {
                               </div>
                         </div>
                         <div className="form">
-                              <form className="signup-form">
+                              <form className="signup-form" onSubmit={(e) => handleRegister(e)}>
                                     <h2 className="form-header">Create an account</h2>
                                     <div className="form-group">
                                           <label htmlFor="email">Email</label>
@@ -70,10 +107,15 @@ const Signup = () => {
                                     <button>Create account</button>
                               </form>
                               <p className="login-cta">
-                                    Already have an account? <a href="/login">Sign in</a>
+                                    Already have an account?{" "}
+                                    <Link to="/login">
+                                          <a href="">Sign in</a>
+                                    </Link>
                               </p>
                         </div>
                   </div>
+
+                  <Footer />
             </>
       );
 };

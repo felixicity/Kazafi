@@ -27,13 +27,41 @@ nav {
             display: flex;
 
             > *:not(.login-btn) {
-                  margin-right: 1rem;
+                  margin-right: 2rem;
             }
 
             button[title="Cart"] {
                   background-color: transparent;
                   border: none;
                   cursor: pointer;
+            }
+
+            ul.user-options {
+                  position-anchor: --user-menu;
+                  position-area: bottom-right;
+                  position: absolute;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  border: none;
+                  background: white;
+                  max-width: 18rem;
+                  border-radius: 15px;
+                  font-size: 0.9rem;
+                  margin-top: 2.5rem;
+                  right: 0;
+
+                  > li {
+                        padding-block: 0.5rem;
+                        padding-inline: 2.5rem;
+                  }
+
+                  > li:first-child {
+                        padding-top: 1rem;
+                  }
+                  > li:last-child {
+                        padding-bottom: 1rem;
+                  }
             }
       }
 }

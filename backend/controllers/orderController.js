@@ -14,7 +14,7 @@ export const placeOrder = async (req, res) => {
             }
 
             // Calculate total price
-            const totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
+            const totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.price, 0);
 
             // Create new order
             const order = new Order({
@@ -53,13 +53,29 @@ export const getUserOrders = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
       try {
-            const order = await Order.findById(req.params.id).populate("user", "name email");
+            const order = await Order.findById(req.params.orderId).populate("user", "name email");
 
             if (!order) {
                   return res.status(404).json({ message: "Order not found" });
             }
 
             res.status(200).json(order);
+      } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Server error fetching order details" });
+      }
+};
+
+export const cancelOrder = async (req, res) => {
+      try {
+            const orderId = req.params.orderId;
+
+            if (!orderId) {
+                  return res.status(404).json({ message: "Order not found" });
+            }
+
+            await Order.findOneAndDelete({ id: orderId });
+            res.status(200).json({ message: "order cancelled succefully" });
       } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Server error fetching order details" });

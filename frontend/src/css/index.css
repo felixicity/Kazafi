@@ -9,13 +9,13 @@
 @import "../css/utilities/wrapper.css" layer(utilities);
 /*@import "../css/animations/generic.css" layer(animations); */
 
-/* @import "../css/components/body.css" layer(components);
-@import "../css/components/nav.css" layer(components);
-@import "../css/components/header.css" layer(components);
-@import "../css/components/main.css" layer(components);
-@import "../css/components/article.css" layer(components);
-@import "../css/components/brand.css" layer(components);
-@import "../css/components/link.css" layer(components);
+@import "../css/components/shop.css" layer(components);
+@import "../css/components/product-card.css" layer(components);
+@import "../css/pages/admin-dashboard.css" layer(components);
+@import "../css/components/admin-header.css" layer(components);
+@import "../css/components/admin-navigation.css" layer(components);
+@import "../css/components/ajax-cart.css" layer(components);
+/*@import "../css/components/link.css" layer(components);
 @import "../css/components/aside.css" layer(components);
 @import "../css/components/button.css" layer(components);*/
 @import "../css/components/login.css" layer(components);

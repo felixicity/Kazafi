@@ -1,10 +1,10 @@
 .avatar {
       display: grid;
       place-items: center;
-      width: 2rem;
-      aspect-ratio: 1;
       background: rgb(62, 3, 152);
       color: white;
       border-radius: 50%;
-      padding: 0em;
+      padding: 0.3em 1em;
+      cursor: pointer;
+      anchor-name: --user-menu;
 }

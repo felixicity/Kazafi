@@ -1,49 +1,39 @@
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
-
-const products = [
-      {
-            id: 969695,
-            title: "Shobo Corner Confy Chair",
-            price: 34000,
-            rating: 7,
-            description:
-                  " Made from the finest silk material, with the best italian woods, this armless chair gives you the confidence, unique style and comfort with elegance.",
-            category: "furniture",
-            colors: ["blue", "black", "gray", "gold"],
-            sizes: ["XS", "M", "L", "XL"],
-            discount: 10,
-      },
-];
+import { products } from "../utilities/productDataTemplate";
 
 const Product = () => {
-      //   const productId = useParams();
+      const productId = useParams();
 
-      const { id, title, price, rating, description, category, colors, sizes, discount } = products[0];
+      const { id, title, price, rating, description, category, img, colors, sizes, discount } = products.find(
+            (item) => item.id === Number(productId.productId)
+      );
 
       const [itemColor, setItemColor] = useState(colors[0]);
       const [quantity, setQuantity] = useState(1);
 
       const productColor = colors.map((color) => (
             <div
-                  key={id}
+                  key={title}
                   className="color"
                   style={{ backgroundColor: color }}
                   onClick={() => setItemColor(color)}
             ></div>
       ));
 
-      const productSizes = sizes.map((size) => (
-            <div key={id} className="size">
-                  {size}
-            </div>
-      ));
+      const productSizes =
+            sizes &&
+            sizes.map((size) => (
+                  <div key={id} className="size">
+                        {size}
+                  </div>
+            ));
 
       return (
             <>
                   <div id="product">
                         <div className="img-container">
-                              <img src={`/kazafi/shobo-chair-${itemColor}.png`} alt="yellow chair" />
+                              <img src={`/kazafi/${img}-${itemColor}.png`} alt={`${itemColor} color`} />
                         </div>
                         <div className="product-details">
                               <h2 className="product-title">{title}</h2>
@@ -59,7 +49,7 @@ const Product = () => {
                                     <h3>Color</h3>
                                     <div className="available-colors">{productColor}</div>
                               </div>
-                              {category == "clothing" && (
+                              {category === "clothing" && (
                                     <div className="product-sizes">
                                           <div className="size-header">
                                                 <h3>select a size</h3>

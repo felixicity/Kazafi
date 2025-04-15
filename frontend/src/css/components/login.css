@@ -3,6 +3,16 @@
       grid-template-columns: 100px repeat(8, 1fr) 100px;
       margin-block-start: 4rem;
 
+      .go-back {
+            padding: 0.5rem 1rem;
+            background: var(--fading-yellow);
+            align-self: self-start;
+            border-radius: 25px;
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+      }
+
       .form {
             grid-column: 4/8;
 
@@ -88,12 +98,16 @@
 
 .password {
       position: relative;
+      border: 1px solid black;
+
       > img {
             position: absolute;
             right: 0;
             transform: translate(-50%, 25%);
+            cursor: pointer;
       }
       > input {
-            appearance: none;
+            -webkit-appearance: none;
+            border: transparent;
       }
 }
