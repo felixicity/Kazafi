@@ -1,0 +1,15 @@
+.promotion-prod {
+      display: flex;
+      height: 40rem;
+      background: #fcf9f3;
+
+      .image-container {
+            width: 55%;
+      }
+
+      .promotion-prod-details {
+            background: #ffefcf;
+            width: 45%;
+            padding: 3rem 1rem;
+      }
+}

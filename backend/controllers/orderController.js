@@ -4,7 +4,7 @@ import Cart from "../models/cartModel.js";
 export const placeOrder = async (req, res) => {
       try {
             const userId = req.userId;
-            const { shippingAddress, paymentMethod } = req.body;
+            const { deliveryMethod, shippingAddress, paymentMethod } = req.body;
 
             // Get user's cart
             const cart = await Cart.findOne({ user: userId }).populate("items.product");
@@ -26,7 +26,9 @@ export const placeOrder = async (req, res) => {
                   })),
                   shippingAddress,
                   paymentMethod,
-                  totalAmount: totalPrice,
+                  deliveryMethod,
+                  totalPrice,
+                  isPaid: false,
             });
 
             await order.save();

@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import path from "path";
 import cors from "cors";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import userRoutes from "./routes/userRouter.js";
@@ -20,9 +21,19 @@ const App = express();
 const port = process.env.PORT;
 
 App.use(express.json());
-App.use(cors());
+App.use(
+      cors({
+            origin: "http://localhost:3000", // your frontend origin
+            credentials: true, // ✅ allows cookies to be sent
+      })
+);
 App.use(express.urlencoded({ extended: true }));
 App.use(cookieParser());
+
+// Absolute path to uploads from project root
+const __dirname = path.resolve(); // only if you're using ES modules
+
+App.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 App.use("/api/users", userRoutes);
 App.use("/api/cart", cartRoutes);

@@ -44,3 +44,44 @@ search {
             }
       }
 }
+
+.search_filter {
+      margin-top: 1rem;
+      display: flex;
+      width: 100%;
+
+      align-items: center;
+      gap: 2rem;
+
+      .search-customer {
+            width: 60%;
+            padding: 0.7rem 1.2rem;
+            border-radius: 10px;
+      }
+
+      .options {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+
+            .option {
+                  position: relative;
+                  width: 5rem;
+                  border-radius: 2px;
+
+                  input[type="text"] {
+                        width: 100%;
+                        -webkit-appearance: none;
+                        padding: 0.4rem 1.2rem;
+                        border: none;
+                  }
+
+                  svg {
+                        position: absolute;
+                        top: 25%;
+                        left: 75%;
+                        color: #5c5b5b;
+                  }
+            }
+      }
+}

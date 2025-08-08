@@ -87,3 +87,16 @@ main {
             }
       }
 }
+
+@keyframes rotating {
+      0% {
+            tranform: rotate(0deg);
+      }
+      50% {
+            tranform: rotate(360deg);
+      }
+      100% {
+            tranform: rotate(0deg);
+      }
+}
+

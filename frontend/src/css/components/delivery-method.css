@@ -1,0 +1,63 @@
+.checkout-steps {
+      margin-top: 1rem;
+      details {
+            margin-bottom: 2rem;
+
+            summary {
+                  background-color: rgb(238, 228, 249);
+                  padding: 1rem 2rem;
+                  margin-bottom: 1rem;
+                  cursor: pointer;
+            }
+
+            .delivery-options,
+            .payment-options {
+                  display: grid;
+                  grid-template-columns: repeat(2, 1fr);
+                  gap: 2rem;
+                  margin-top: 1rem;
+
+                  .input-group {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: start;
+                        gap: 1rem;
+                        border: 1px solid black;
+                        padding-block: 1rem;
+                        padding-left: 0.5rem;
+                        cursor: pointer;
+
+                        &:has(input[type="radio"]:checked) {
+                              border: 2px solid black;
+                        }
+
+                        &:hover {
+                              border: 2px solid black;
+                        }
+
+                        input {
+                              -webkit-appearance: none;
+                              width: 12px;
+                              aspect-ratio: 1;
+                              border-radius: 50%;
+                              cursor: pointer;
+                        }
+
+                        input:checked {
+                              background-color: black;
+                        }
+
+                        input::after {
+                              content: "";
+                              position: absolute;
+                              width: 20px;
+                              aspect-ratio: 1;
+                              border-radius: 50%;
+                              border: 2px solid black;
+                              transform: translate(-19%, -19%);
+                        }
+                  }
+            }
+      }
+}

@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { getFromLocalStorage, setToLocalStorage } from "../utilities/localStorageUtils";
 
 const initialState = {
-      method: getFromLocalStorage("paymentMethod", ""),
+      paymentMethod: getFromLocalStorage("paymentMethod", ""),
 };
 
 const paymentMethodSlice = createSlice({
@@ -11,8 +11,8 @@ const paymentMethodSlice = createSlice({
       initialState,
       reducers: {
             savePaymentMethod(state, action) {
-                  state.method = action.payload;
-                  setToLocalStorage("paymentMethod", state.method);
+                  state.paymentMethod = action.payload;
+                  setToLocalStorage("paymentMethod", action.payload);
             },
             clearPaymentMethod(state) {
                   state.method = "";

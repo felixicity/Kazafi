@@ -72,7 +72,12 @@ const loginUser = async (req, res) => {
             const token = generateToken(user);
 
             // Send the token as an HTTP-only cookie
-            res.cookie("authToken", token, { httpOnly: true, secure: true, sameSite: "strict" });
+            res.cookie("authToken", token, {
+                  httpOnly: true,
+                  secure: process.env.NODE_ENV === "production", // ✅ Only send over HTTPS in production
+                  sameSite: "strict", // ✅ Prevent CSRF
+                  maxAge: 24 * 60 * 60 * 1000,
+            }); // Cookie expires in 1 day});
 
             res.status(200).json({
                   message: "Logged in successfully",
@@ -147,8 +152,12 @@ const getAllUsers = async (req, res) => {
 
 // Logout user (clear JWT cookie)
 const logoutUser = (req, res) => {
-      res.clearCookie("authToken");
-      res.status(200).json({ message: "Logged out successfully" });
+      try {
+            res.clearCookie("authToken");
+            res.status(200).json({ message: "Logged out successfully" });
+      } catch (err) {
+            res.status(500).json({ message: "There was an error when logging out. Try again" });
+      }
 };
 
 export { registerUser, loginUser, getUserProfile, getAllUsers, updateUserProfile, logoutUser };

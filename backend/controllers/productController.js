@@ -2,11 +2,10 @@ import fs from "fs";
 import Product from "../models/productModel.js";
 
 const createProduct = async (req, res) => {
-      const { name, description, price, category } = req.body;
+      const { name, description, category, variations } = req.body;
 
       const image = req.file ? req.file.path : null; //Save image path
 
-      //   console.log({ name, description, price, category, image });
       try {
             // Create a new Product
             const newProduct = new Product({
@@ -14,7 +13,10 @@ const createProduct = async (req, res) => {
                   description,
                   price,
                   category,
-                  images: [image], // Store image path or URL
+                  stock,
+                  colors: colors.split(","),
+                  images: [image], // Store image path or URL in images array
+                  discount,
             });
 
             const product = await newProduct.save();
@@ -33,7 +35,7 @@ const getProducts = async (req, res) => {
             const products = await Product.find();
             res.status(200).json({ products });
       } catch (error) {
-            res.status(500).json({ message: "Server error when getting aall products" });
+            res.status(500).json({ message: "Server error when getting all products" });
       }
 };
 

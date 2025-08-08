@@ -1,13 +1,14 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import Featured from "../components/Featured";
+import GroupingList, { category } from "../components/GroupingList";
 import Navigation from "../components/Navigation";
 import Footer from "../components/Footer";
 import "../css/index.css";
+import HomeProductCard from "../components/HomeProductCard";
 
 const Home = () => {
       const { userInfo } = useSelector((state) => state.auth);
-      const dispatch = useDispatch();
       return (
             <>
                   <div className="header">
@@ -24,7 +25,7 @@ const Home = () => {
                                     <li title="change language">Language</li>
                               </ul>
                         </div>
-                        <Navigation userInfo={userInfo} dispatch={dispatch} />
+                        <Navigation />
                         <main className="wrapper">
                               <div className="hero">
                                     <em>
@@ -45,14 +46,18 @@ const Home = () => {
                                           </a>
                                     </div>
                               </div>
-                              <img
-                                    className="carousel-1"
-                                    src="./kazafi/eno-chair-occasional-chairs-39871458214110-Photoroom (1).png"
-                                    alt="sofa"
-                              />
+                              <img className="carousel-1" src="/kazafi/eno-chair.png" alt="eno-chair" />
                         </main>
                   </div>
+                  <GroupingList>
+                        {category.map((cat) => (
+                              <li key={cat}>
+                                    <Link to={`/shop/${cat}`}>{cat}</Link>
+                              </li>
+                        ))}
+                  </GroupingList>
                   <Featured />
+                  <HomeProductCard />
                   <Footer />
             </>
       );

@@ -1,0 +1,14 @@
+.shop_bag {
+      position: relative;
+
+      .items_qty {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            padding: 4px 8px;
+            background: black;
+            font-weight: 500;
+            color: white;
+            border-radius: 50%;
+      }
+}

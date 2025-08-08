@@ -23,7 +23,7 @@ router.post(
             body("category").notEmpty().withMessage("Product category is required"),
       ],
       protectMiddleware,
-      adminMiddleware,
+      // adminMiddleware,
       createProduct
 );
 

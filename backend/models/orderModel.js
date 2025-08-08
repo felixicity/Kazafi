@@ -7,44 +7,36 @@ const OrderSchema = new mongoose.Schema(
                   ref: "User",
                   required: true,
             },
-            orderItems: [
+            items: [
                   {
                         product: {
                               type: mongoose.Schema.Types.ObjectId,
                               ref: "Product",
                               required: true,
                         },
-                        quantity: {
-                              type: Number,
-                              required: true,
-                              min: 1,
-                        },
-                        price: {
-                              type: Number,
-                              required: true,
-                        },
-                        size: {
-                              type: String,
-                        },
-                        color: {
-                              type: String,
-                        },
                   },
             ],
-            shippingAddress: {
-                  street: { type: String, required: true },
-                  city: { type: String, required: true },
-                  state: { type: String, required: true },
-                  country: { type: String, default: "Nigeria" },
-                  zipCode: { type: String },
+            totalQuantity: {
+                  type: Number,
+                  required: true,
+                  min: 1,
             },
-            totalPrice: {
+            totalAmount: {
                   type: Number,
                   required: true,
             },
+            shippingAddress: {
+                  street: { type: String, required: true },
+                  busstop: { type: String },
+                  city: { type: String, required: true },
+                  state: { type: String, required: true },
+                  country: { type: String, default: "Nigeria" },
+                  phone: { type: String, required: true },
+                  postalcode: { type: String },
+            },
             paymentMethod: {
                   type: String,
-                  enum: ["Paystack", "Flutterwave", "Stripe", "Cash on Delivery"],
+                  enum: ["Paystack", "Flutterwave", "Qrcode", "Cash on Delivery"],
                   required: true,
             },
             paymentStatus: {

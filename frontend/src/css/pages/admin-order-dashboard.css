@@ -1,0 +1,171 @@
+.order-table,
+.transaction-table {
+      width: 95%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+
+      th {
+            color: #5c5c5c;
+            font-weight: 600;
+            font-size: 0.9rem;
+
+            &:not(:first-child) {
+                  border: 1px solid #d6d6d6;
+            }
+
+            &:last-child {
+                  border-right: none;
+            }
+      }
+
+      td {
+            font-size: 0.8rem;
+            font-weight: 525;
+
+            &:not(:first-child) {
+                  color: #363636;
+                  border: 1px solid #eee;
+            }
+
+            &:first-child {
+                  color: #1b1b1b;
+            }
+
+            &:last-child {
+                  border-right: none;
+            }
+      }
+}
+
+.order-table th,
+.order-table td,
+.transaction-table th,
+.transaction-table td {
+      border-block: 1px solid #dddddd;
+      padding: 0.5rem;
+      text-align: left;
+}
+
+.admin-actions {
+      display: flex;
+      margin-block-start: 1rem;
+      gap: 1rem;
+}
+
+.order-details {
+      position: absolute;
+      background: white;
+      top: 0;
+      right: 0;
+      width: 40%;
+      height: 100vh;
+      overflow-y: scroll;
+      transition: all 0.2s ease-in-out;
+
+      .admin-actions {
+            display: flex;
+            margin-block-start: 1rem;
+            gap: 0.5rem;
+      }
+
+      .section {
+            padding: 0.5rem 2rem;
+      }
+
+      .order-details-header {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            margin-top: 0.5rem;
+            margin-left: 2rem;
+      }
+
+      hr {
+            margin-block: 0.5rem;
+      }
+
+      .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-block-end: 2rem;
+
+            h3 {
+                  display: flex;
+                  gap: 0.8rem;
+                  font-size: 2rem;
+                  align-items: center;
+            }
+      }
+
+      .shipping-info,
+      .items,
+      .payment-status {
+            margin-block-start: 2rem;
+
+            p {
+                  font-weight: bold;
+                  margin-block-end: 1rem;
+            }
+
+            div {
+                  display: inline;
+            }
+      }
+}
+
+.processing {
+      background-color: #a2bfed;
+      color: #073071;
+      padding: 0.2rem 0.5rem;
+      border-radius: 15px;
+}
+
+.pending {
+      background-color: #fff79d;
+      color: #966e08;
+      padding: 0.25rem 0.5rem;
+      border-radius: 15px;
+}
+
+.shipped {
+      background-color: #c5c7ff;
+      color: #030574;
+      padding: 0.2rem 0.4rem;
+      border-radius: 15px;
+}
+
+.refund {
+      background-color: #c4aaff;
+      color: #220568;
+      padding: 0.2rem 0.4rem;
+      border-radius: 15px;
+}
+
+.failed {
+      background-color: #ffabab;
+      color: #880707;
+      padding: 0.2rem 0.4rem;
+      border-radius: 15px;
+}
+
+.paid,
+.delivered {
+      background-color: #b6ffab;
+      color: #056e4b;
+      padding: 0.2rem 0.7rem;
+      border-radius: 15px;
+}
+
+.cancelled {
+      background-color: #e1e2e3;
+      color: #777777f6;
+      padding: 0.2rem 0.7rem;
+      border-radius: 15px;
+}
+
+.transaction-header {
+      display: flex;
+      align-items: last baseline;
+      gap: 3rem;
+}

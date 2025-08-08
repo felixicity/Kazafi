@@ -5,7 +5,7 @@ header {
       margin-block: 1rem;
 }
 
-nav {
+nav.desktop-nav {
       display: flex;
       align-items: center;
       justify-content: space-between;

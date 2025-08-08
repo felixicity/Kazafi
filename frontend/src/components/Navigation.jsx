@@ -1,22 +1,37 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import Avatar from "../utilities/Avatar";
 import AjaxCart from "./AjaxCart";
 import SearchInput from "./searchInput";
 import { clearCredentials } from "../slices/user/clientAuthSlice";
 import { useLogoutMutation } from "../slices/user/usersApiSlice";
+import { calculateTotalQuantity, calculateTotalPrice } from "../slices/cart/clientCartSlice";
 import "../css/components/navigation.css";
+import { getFromLocalStorage } from "../utilities/localStorageUtils";
+import ShoppingBag from "./ShoppingBag";
 
-const Navigation = ({ userInfo, dispatch }) => {
+const Navigation = () => {
+      const { totalQuantity } = getFromLocalStorage("cart", 0); // get current quantity of items frrm local storage
       const [userMenu, setUserMenu] = useState(false);
       const [showCart, setShowCart] = useState(false);
       const navigate = useNavigate();
+      const dispatch = useDispatch();
+
       const [logoutApiRequest] = useLogoutMutation();
+      const { cartItems } = useSelector((state) => state.cart);
+      const { userInfo } = useSelector((state) => state.auth);
+
+      useEffect(() => {
+            dispatch(calculateTotalQuantity());
+            dispatch(calculateTotalPrice());
+      }, [cartItems, dispatch]);
 
       async function handleLogout() {
             try {
-                  await logoutApiRequest().unwrap();
+                  const res = await logoutApiRequest().unwrap();
+                  console.log(res);
                   dispatch(clearCredentials());
                   setUserMenu(false);
                   navigate("/");
@@ -28,7 +43,7 @@ const Navigation = ({ userInfo, dispatch }) => {
       return (
             <header className="wrapper">
                   <div className="logo">Kazafi</div>
-                  <nav>
+                  <nav className="desktop-nav">
                         <SearchInput />
                         <ul>
                               <li>
@@ -41,11 +56,7 @@ const Navigation = ({ userInfo, dispatch }) => {
                               <li>Contact</li>
                         </ul>
                         <div className="icon-button-list">
-                              <img
-                                    src="./icons/shopping_bag.svg"
-                                    alt="shopping bag"
-                                    onClick={() => setShowCart(true)}
-                              />
+                              <ShoppingBag totalQuantity={totalQuantity} setShowCart={setShowCart} />
                               {userInfo ? (
                                     <Avatar username="F" onclick={() => setUserMenu(!userMenu)} />
                               ) : (

@@ -11,16 +11,14 @@ const productApiSlice = apiSlice.injectEndpoints({
                         body: data,
                   }),
             }),
-            getProducts: builder.mutation({
-                  query: () => ({
-                        url: PRODUCT_URL,
-                        method: "GET",
-                  }),
+            getProducts: builder.query({
+                  query: () => PRODUCT_URL,
+                  //   providesTags: ["Products"],
             }),
-            getSingleProduct: builder.mutation({
+
+            getSingleProduct: builder.query({
                   query: (data) => ({
-                        url: `${PRODUCT_URL}/:${data}`,
-                        method: "GET",
+                        url: `${PRODUCT_URL}/${data}`,
                   }),
             }),
             updateProduct: builder.mutation({
@@ -41,8 +39,8 @@ const productApiSlice = apiSlice.injectEndpoints({
 
 export const {
       useCreateProductMutation,
-      useGetProductsMutation,
-      useGetSingleProductMutation,
+      useGetProductsQuery,
+      useGetSingleProductQuery,
       useUpdateProductMutation,
       useDeleteProductMutation,
 } = productApiSlice;

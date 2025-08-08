@@ -16,7 +16,7 @@ export const initiatePayment = async (req, res) => {
             if (!order) return res.status(404).json({ message: "Order not found" });
 
             // Generate a unique payment reference
-            const reference = `KAZAFI_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+            const reference = `KAZAFI_${Date.now()}_${Math.floor(Math.random() * 30000000000)}`;
 
             // Create payment record
             const payment = new Payment({
@@ -27,6 +27,7 @@ export const initiatePayment = async (req, res) => {
                   provider,
                   status: "pending",
             });
+
             await payment.save();
 
             let paymentUrl = "";
@@ -40,8 +41,14 @@ export const initiatePayment = async (req, res) => {
                               reference,
                               currency: "NGN",
                         },
-                        { headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET}` } }
+                        {
+                              headers: {
+                                    Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
+                                    "Content-Type": "application/json",
+                              },
+                        }
                   );
+
                   paymentUrl = response.data.data.authorization_url;
             } else if (provider === "Flutterwave") {
                   const response = await axios.post(
@@ -60,6 +67,7 @@ export const initiatePayment = async (req, res) => {
 
             res.status(200).json({ paymentUrl, reference });
       } catch (error) {
+            console.error(error.response ? error.response.data : error.message);
             res.status(500).json({ message: "Payment initialization failed", error });
       }
 };

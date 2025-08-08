@@ -1,47 +1,63 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { products } from "../utilities/productDataTemplate";
+import { useAddToCartMutation } from "../slices/cart/cartApiSlice";
+import { useGetSingleProductQuery } from "../slices/productApiSlice";
 
 const Product = () => {
-      const productId = useParams();
-
-      const { id, title, price, rating, description, category, img, colors, sizes, discount } = products.find(
-            (item) => item.id === Number(productId.productId)
-      );
-
-      const [itemColor, setItemColor] = useState(colors[0]);
+      const [itemColor, setItemColor] = useState(null);
       const [quantity, setQuantity] = useState(1);
+      const { productId } = useParams();
 
-      const productColor = colors.map((color) => (
-            <div
-                  key={title}
-                  className="color"
-                  style={{ backgroundColor: color }}
-                  onClick={() => setItemColor(color)}
-            ></div>
-      ));
+      const [apiAddToCart] = useAddToCartMutation();
+
+      const { data, isLoading, error } = useGetSingleProductQuery(productId);
+
+      if (isLoading) return <p>Loading products...</p>;
+      if (error) return <p>Something went wrong!</p>;
+
+      // If your API returns { products: [...] }
+      const product = data?.product ?? [];
+
+      const { _id, name, title, price, description, category, images, colors, sizes, discount } = product;
+
+      const productColor = colors
+            ? colors.map((color) => (
+                    <div
+                          key={colors.indexOf(color)}
+                          className="color"
+                          style={{ backgroundColor: color }}
+                          onClick={() => setItemColor(color)}
+                    ></div>
+              ))
+            : null;
 
       const productSizes =
             sizes &&
             sizes.map((size) => (
-                  <div key={id} className="size">
+                  <div key={_id} className="size">
                         {size}
                   </div>
             ));
+
+      const handleAddtoCart = async () => {
+            const res = await apiAddToCart({ productId: _id, quantity }).unwrap();
+            console.log(res);
+      };
 
       return (
             <>
                   <div id="product">
                         <div className="img-container">
-                              <img src={`/kazafi/${img}-${itemColor}.png`} alt={`${itemColor} color`} />
+                              <img src={`http://localhost:5000/${images[0]}`} alt={name} />
                         </div>
                         <div className="product-details">
-                              <h2 className="product-title">{title}</h2>
+                              <h2 className="product-name">{name}</h2>
+                              <p className="product-title">{title}</p>
                               <p className="product-price">
                                     <span>&#8358;{price}</span> <span>&#8358;{price - (price * discount) / 100}</span>
                               </p>
                               <div className="product-rating">
-                                    Reviews <span className="number-of-reviews">({rating})</span>
+                                    Reviews <span className="number-of-reviews">({6})</span>
                               </div>
                               <p className="product-desc">{description}</p>
                               <hr />
@@ -64,7 +80,7 @@ const Product = () => {
                                           <span>{quantity}</span>
                                           <span onClick={() => setQuantity(quantity + 1)}>+</span>
                                     </div>
-                                    <a href="/">Buy now</a>
+                                    <a onClick={() => handleAddtoCart(itemColor)}>Add to Cart</a>
                               </div>
                               <div className="other-details">
                                     <div className="detail-group">
@@ -78,7 +94,7 @@ const Product = () => {
                                           <img src="/icons/autorenew.svg" alt="cycle" />
                                           <div className="detail-desc">
                                                 <p>Easy Return and Refund</p>
-                                                <span>Return within first 30 days of purchase</span>
+                                                <span>Return within first 15 days of purchase</span>
                                           </div>
                                     </div>
                               </div>

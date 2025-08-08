@@ -9,27 +9,31 @@
 @import "../css/utilities/wrapper.css" layer(utilities);
 /*@import "../css/animations/generic.css" layer(animations); */
 
-@import "../css/components/shop.css" layer(components);
+@import "../css/pages/shop.css" layer(components);
 @import "../css/components/product-card.css" layer(components);
 @import "../css/pages/admin-dashboard.css" layer(components);
 @import "../css/components/admin-header.css" layer(components);
 @import "../css/components/admin-navigation.css" layer(components);
 @import "../css/components/ajax-cart.css" layer(components);
-/*@import "../css/components/link.css" layer(components);
-@import "../css/components/aside.css" layer(components);
-@import "../css/components/button.css" layer(components);*/
-@import "../css/components/login.css" layer(components);
+@import "../css/components/group-nav.css" layer(components);
+@import "../css/components/shopping-bag.css" layer(components);
+@import "../css/pages/cart.css" layer(components);
+@import "../css/pages/login.css" layer(components);
 @import "../css/components/search.css" layer(components);
-@import "../css/components/signup.css" layer(components);
-/*@import "../css/components/product-card.css" layer(components);*/
-@import "../css/components/not-found.css" layer(components);
+@import "../css/pages/signup.css" layer(components);
+@import "../css/pages/checkout.css" layer(components);
+@import "../css/pages/not-found.css" layer(components);
 @import "../css/components/svg.css" layer(components);
-@import "../css/components/product.css" layer(components);
-/*@import "../css/components/most-popular-scroller.css" layer(components);
-@import "../css/components/fresh-releases-scroller.css" layer(components);
-@import "../css/components/super-hot-scroller.css" layer(components);
-@import "../css/components/black-friday-scroller.css" layer(components);*/
+@import "../css/pages/product.css" layer(components);
+@import "../css/components/delivery-method.css" layer(components);
+@import "../css/pages/user-dashboard.css" layer(components);
+@import "../css/components/split-button.css" layer(components);
+@import "../css/components/image-upload-modal.css" layer(components);
 @import "../css/components/featured.css" layer(components);
+@import "../css/components/rounded-btn.css" layer(components);
 @import "../css/components/footer.css" layer(components);
-/*@import "../css/components/scroll-progress.css" layer(components);
-@import "../css/components/lightbox.css" layer(components); */
+@import "../css/pages/admin-add-product.css" layer(components);
+@import "../css/pages/admin-user-dashboard.css" layer(components);
+@import "../css/pages/admin-order-dashboard.css" layer(components);
+@import "../css/components/tabs.css" layer(components);
+@import "../css/components/promo-product.css" layer(components);

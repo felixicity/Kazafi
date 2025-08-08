@@ -1,0 +1,18 @@
+.tabs {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.95rem;
+      font-weight: 550;
+      color: #5c5c5c;
+      margin-block: 1rem;
+
+      span {
+            cursor: pointer;
+            transition: all 0.2s ease-out;
+      }
+
+      span.active {
+            border-bottom: 3px solid #363636;
+            padding-bottom: 0.5rem;
+      }
+}

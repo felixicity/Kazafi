@@ -12,7 +12,7 @@ const ORDERS_URL = "http://localhost:5000/api/orders";
 
 const ordersApiSlice = apiSlice.injectEndpoints({
       endpoints: (builder) => ({
-            placeNewOrder: builder.mutation({
+            createOrder: builder.mutation({
                   query: (data) => ({
                         url: ORDERS_URL,
                         method: "POST",
@@ -47,7 +47,7 @@ const ordersApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-      usePlaceNewOrderMutation,
+      useCreateOrderMutation,
       useGetUserOrdersMutation,
       useCancelOrderMutation,
       useGetOrderMutation,

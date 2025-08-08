@@ -7,9 +7,12 @@
       height: 100%;
       padding: 1rem;
       overflow-y: scroll;
+      z-index: 999;
 
-      h2 {
-            text-align: center;
+      .ajax-cart_header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-block-start: 0.5rem;
             margin-block-end: 1.5rem;
       }

@@ -1,5 +1,7 @@
 import { apiSlice } from "../apiSlice";
-const CART_URL = "localhost:5000/api/cart";
+import { addToCart as addToCartClient } from "./clientCartSlice";
+import { discountCalculator } from "../../utilities/discountCalculator";
+const CART_URL = "http://localhost:5000/api/cart";
 
 const cartApiSlice = apiSlice.injectEndpoints({
       endpoints: (builder) => ({
@@ -9,23 +11,41 @@ const cartApiSlice = apiSlice.injectEndpoints({
                         method: "POST",
                         body: data,
                   }),
+                  async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                        try {
+                              const { data } = await queryFulfilled;
+
+                              // Save to cart format — fine-tuned
+                              const refinedCart = data.populatedCart.items.map((item) => ({
+                                    id: item.product._id,
+                                    name: item.product.name,
+                                    quantity: item.quantity,
+                                    image: item.product.images[0],
+                                    price: discountCalculator(item.product.price, item.product.discount),
+                              }));
+
+                              // Dispatch to your slice
+                              dispatch(addToCartClient(refinedCart));
+                        } catch (err) {
+                              console.error("Failed to update localStorage:", err);
+                        }
+                  },
             }),
             removeFromCart: builder.mutation({
-                  query: (data) => ({
-                        url: `${CART_URL}/remove/:${data}`,
+                  query: (itemId) => ({
+                        url: `${CART_URL}/remove/${itemId}`,
                         method: "DELETE",
                   }),
             }),
             updateItemQuantity: builder.mutation({
                   query: (data) => ({
-                        url: `${CART_URL}/update/:${data}`,
+                        url: `${CART_URL}/update/${data}`,
                         method: "PUT",
                   }),
             }),
-            getCart: builder.mutation({
+            getCart: builder.query({
                   query: () => ({
                         url: CART_URL,
-                        method: "GET",
                   }),
             }),
             clearCart: builder.mutation({
@@ -38,9 +58,9 @@ const cartApiSlice = apiSlice.injectEndpoints({
 });
 
 export const {
-      useAddToCArtMutation,
+      useAddToCartMutation,
       useRemoveFromCartMutation,
       useUpdateItemQuantityMutation,
-      useGetCartMutation,
+      useGetCartQuery,
       useClearCartMutation,
 } = cartApiSlice;
