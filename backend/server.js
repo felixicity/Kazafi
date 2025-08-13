@@ -13,6 +13,8 @@ import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRouter.js";
 import contactRoutes from "./routes/contactRouter.js";
 import connectDatabase from "./config/db.js";
+import cloudinary from "./config/cloudinary.js";
+
 dotenv.config();
 
 connectDatabase();

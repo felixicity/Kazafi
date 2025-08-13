@@ -1,31 +1,38 @@
 import fs from "fs";
 import Product from "../models/productModel.js";
+import { parseVariations, parseImageVariations } from "../utils.js";
 
 const createProduct = async (req, res) => {
-      const { name, description, category, variations } = req.body;
+      const { name, description, category } = req.body;
 
-      const image = req.file ? req.file.path : null; //Save image path
+      // 1. Reconstruct the variations array from the flattened req.body
+      const variations = parseVariations(req.body);
+      const imageFilesMap = await parseImageVariations(req.files);
+
+      const productData = {
+            name,
+            description,
+            category,
+            variations: [],
+      };
+
+      // Combine the parsed variations with the image URLs
+      const productVariations = variations.map((variation, index) => ({
+            _id: `${name}_variation_${index + 1}`,
+            ...variation,
+            imageURLs: imageFilesMap[index + 1] || [],
+      }));
 
       try {
+            productData.variations.push(...productVariations);
+
             // Create a new Product
-            const newProduct = new Product({
-                  name,
-                  description,
-                  price,
-                  category,
-                  stock,
-                  colors: colors.split(","),
-                  images: [image], // Store image path or URL in images array
-                  discount,
-            });
+            const newProduct = new Product(productData);
 
             const product = await newProduct.save();
-            res.status(201).json({ message: "Product Created", product });
+            res.status(201).json({ message: "Product Created Successfully", product });
       } catch (error) {
-            if (req.file) {
-                  fs.unlinkSync(req.file.path); // Delete uploaded file if error occurs
-            }
-            res.status(500).json({ message: "Server error occurred while creating product" });
+            res.status(500).json({ message: "Server error occurred while creating product or uploadig images" });
       }
 };
 

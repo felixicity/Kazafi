@@ -10,28 +10,30 @@ const Cart = () => {
       if (error) return <p>Something went wrong!</p>;
 
       // If your API returns { products: [...] }
-      const cart = data?.cart.items ?? [];
+
+      const cart = data?.cart ?? {};
+      const cartItems = cart.items ?? [];
 
       //   console.log(cart)
 
-      let cartItems;
-      if (cart.product === "") {
-            cartItems = (
+      let cartItemsList;
+      if (cartItems.product === "") {
+            cartItemsList = (
                   <>
                         <h2>Your Shopping Cart is Empty!</h2> <button>Check Our Collections</button>
                   </>
             );
       } else {
             // getCart.cart.items.product
-            cartItems = cart.map((item) => (
+            cartItemsList = cartItems.map((item) => (
                   <div className="cart-product" key={item.product._id}>
                         <div className="cart-product-img">
-                              <img src={`http://localhost:5000/${item.product?.images[0]}`} alt={item.product?.name} />
+                              <img src={item.variation?.imageURLs[0]} alt={item.product?.name} />
                         </div>
                         <div className="product-details">
                               <p className="product-name">{item.product?.name}</p>
                               <p className="product-title">{item.product?.title}</p>
-                              <p className="product-price">{item.product?.price}</p>
+                              <p className="product-price">&#8358;{item.variation.price}</p>
                               <div className="product-available">
                                     <div>
                                           Qty: <span>{item.quantity}</span>
@@ -54,12 +56,12 @@ const Cart = () => {
             <div className="shopping-cart wrapper">
                   <div className="cart-items">
                         <header>
-                              <h2>Shopping cart</h2> <span>{cart.length} item</span>
+                              <h2>Shopping cart</h2> <span>{cartItems.length} items</span>
                         </header>
                         <hr />
-                        {cartItems}
+                        {cartItemsList}
                   </div>
-                  {cart.length && (
+                  {cartItems.length && (
                         <aside className="order-summary">
                               <header>
                                     <h2>Order summary</h2>
@@ -69,13 +71,13 @@ const Cart = () => {
                                     The sales tax is calculated when you select shipping address at checkout.
                               </p>
                               <div className="order-detail">
-                                    <p>My Cart ({cart.length} item)</p> <span>${cart[0].product.price}</span>
+                                    <p>My Cart ({cartItems.length} item)</p> <span>&#8358;{Cart.totalAmount}</span>
                               </div>
                               <div className="order-detail">
-                                    <p>Sales tax </p> <span>--</span>
+                                    <p>Sales tax </p> <span>-- &#8358;45</span>
                               </div>
                               <div className="order-detail">
-                                    <p>Import duties</p> <span>$1200</span>
+                                    <p>Import duties</p> <span>-- &#8358; 1800</span>
                               </div>
                               <label htmlFor="promo" id="promo-label">
                                     Add promotional code
@@ -88,7 +90,7 @@ const Cart = () => {
                                     <p>
                                           Total (exluding <br /> shipping fee):
                                     </p>
-                                    <span>$1200</span>
+                                    <span>&#8358; {cart.totalAmount}</span>
                               </div>
                               <Link className="checkout-btn" to="./information">
                                     Secure checkout

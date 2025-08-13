@@ -4,34 +4,39 @@ import Cart from "../models/cartModel.js";
 
 // Add item to the cart
 export const addToCart = async (req, res) => {
-      const { productId, quantity } = req.body;
+      const { productId, variation, quantity } = req.body;
+      //  variation is an array of product variations
 
       const userId = req.userId;
-      //   console.log(userId);
 
       try {
-            // Check if item is already in cart
-            // let cartItem = await Cart.findOne({ user: userId });
-
             // Check if user already has a cart
             let cart = await Cart.findOne({ user: userId }); // Get user ID and product ID from authentication middleware
+            const item = [{ product: productId, variation, quantity }];
+            // console.log("item :", item);
 
             if (!cart) {
                   // Create a new cart if none exists
                   cart = new Cart({
                         user: userId,
-                        items: [{ product: productId, quantity }],
+                        items: item,
+                        totalAmount: variation.price,
+                        totalQuantity: variation.quantity,
                   });
             } else {
                   // Check if product already exists in cart
-                  const existingItemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
+
+                  const existingItemIndex = cart.items.findIndex((item) => item.variation._id === variation._id);
 
                   if (existingItemIndex > -1) {
-                        // Product exists, update quantity
                         cart.items[existingItemIndex].quantity += quantity;
+                        cart.totalQuantity += quantity;
+                        cart.totalAmount += variation.price;
                   } else {
                         // Add new product to cart
-                        cart.items.push({ product: productId, quantity });
+                        cart.items.push({ product: productId, variation, quantity });
+                        cart.totalQuantity += quantity;
+                        cart.totalAmount += variation.price;
                   }
             }
 
@@ -62,7 +67,7 @@ export const updateCartItem = async (req, res) => {
             item.quantity = quantity; // Update the quantity
 
             await cart.save();
-            res.status(200).json({ message: "Cart item updated", cart: user.cart });
+            res.status(200).json({ message: "Cart item updated", cart: cart });
       } catch (error) {
             res.status(500).json({ message: "Server error", error });
       }
@@ -71,6 +76,7 @@ export const updateCartItem = async (req, res) => {
 // Remove an item from the cart
 export const removeFromCart = async (req, res) => {
       const { itemid } = req.params;
+
       const userId = req.userId;
 
       try {
@@ -81,10 +87,7 @@ export const removeFromCart = async (req, res) => {
             }
 
             // Find the item in the cart
-            cart.items.forEach((item) => {
-                  console.log("item._id:", item._id, typeof item._id, "itemid:", itemid, typeof itemid);
-            });
-            const itemIndex = cart.items.findIndex((item) => item.product.toString() === itemid);
+            const itemIndex = cart.items.findIndex((item) => item.variation._id.toString() === itemid);
 
             if (itemIndex === -1) {
                   return res.status(404).json({ message: "Cart item not found" });

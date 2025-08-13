@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const ColorVariationSchema = new mongoose.Schema({
+const VariationSchema = new mongoose.Schema({
       color: { type: String, required: true }, // e.g., 'Red'
 
       hexCode: { type: String },
@@ -8,8 +8,6 @@ const ColorVariationSchema = new mongoose.Schema({
       sizes: {
             type: [String], // Example: ["S", "M", "L", "XL"]
       }, // Optional: visual use
-
-      images: [String], // e.g., ['red1.jpg', 'red2.jpg']
 
       price: {
             type: Number,
@@ -24,9 +22,12 @@ const ColorVariationSchema = new mongoose.Schema({
             default: 0, // Default to out of stock if not specified
       }, // Optional per variation
 
-      discount: Number,
+      discount: {
+            type: Number,
+            default: 0,
+      },
 
-      images: {
+      imageURLs: {
             type: [String], // Array of image URLs
             required: [true, "At least one product image is required"],
       },
@@ -45,10 +46,10 @@ const ProductSchema = new mongoose.Schema(
             },
             category: {
                   type: String,
-                  enum: ["clothes", "furniture"], // Add more categories if needed
+                  enum: ["chairs", "sofas", "tables", "wardrobes", "consoles"], // Add more categories if needed
                   required: [true, "Product category is required"],
             },
-            variations: [ColorVariationSchema], // Multiple color variants
+            variations: [VariationSchema], // Multiple color variants
             isFeatured: {
                   type: Boolean,
                   default: false, // Determines if the product is shown as featured

@@ -15,15 +15,9 @@ const router = express.Router();
 // Create product route (with image upload)
 router.post(
       "/create",
-      upload.single("image"), // Expect the image to be in the 'image' field in the request
-      [
-            body("name").notEmpty().withMessage("Product name is required"),
-            body("price").isNumeric().withMessage("Price must be a number"),
-            body("description").notEmpty().withMessage("Product description is required"),
-            body("category").notEmpty().withMessage("Product category is required"),
-      ],
-      protectMiddleware,
-      // adminMiddleware,
+      upload.any(), // Expect the image  be in the 'image' field in the request
+      //   protectMiddleware,
+      //   adminMiddleware,
       createProduct
 );
 
@@ -34,7 +28,13 @@ router.get("/", getProducts);
 router.get("/:productid", getProductById);
 
 // Update product route (with optional image upload)
-router.put("/:productid", upload?.single("image"), protectMiddleware, adminMiddleware, updateProduct);
+router.put(
+      "/:productid",
+      // upload.single("image")
+      protectMiddleware,
+      adminMiddleware,
+      updateProduct
+);
 
 // Delete product route
 router.delete("/:productid", protectMiddleware, adminMiddleware, deleteProduct);

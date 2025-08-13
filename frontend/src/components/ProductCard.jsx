@@ -1,5 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { products } from "../utilities/productDataTemplate";
 import { useNavigate } from "react-router-dom";
 import { useGetProductsQuery } from "../slices/productApiSlice";
 
@@ -22,8 +20,7 @@ const ProductCard = () => {
       const mappedProducts = products.map((product) => (
             <div key={product?._id} className="product-card">
                   <img
-                        // src={`./kazafi/${product.img}-${product.colors ? product?.colors[0] : "img"}.png`}
-                        src={`http://localhost:5000/${product?.images[0]}`}
+                        src={product?.variations[0]?.imageURLs.length > 0 && product?.variations[0]?.imageURLs[0]}
                         alt={product?.name}
                   />
                   <span className="promotion">Limited Edition</span>
@@ -33,7 +30,7 @@ const ProductCard = () => {
                               <p className="type">{product?.category}</p>
                         </div>
                         <div className="product-info">
-                              <p className="price">&#8358;{product?.price}</p>
+                              <p className="price">&#8358;{product?.variations[0].price}</p>
                               <a onClick={() => handleClick(product?._id)}>Buy now</a>
                         </div>
                   </div>

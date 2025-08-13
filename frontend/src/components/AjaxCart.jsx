@@ -50,11 +50,11 @@ const AjaxCart = ({ showCart, setShowCart }) => {
             cartProducts = cartItems.map((product) => (
                   <div className="cart-product" key={`${product.id}`}>
                         <div className="cart-product-img">
-                              <img src={`http://localhost:5000/${product?.image}`} alt={product?.name} />
+                              <img src={product?.image} alt={product.name} />
                         </div>
                         <div className="item-details">
-                              <p className="item-name">{product.name}</p>
-                              <p className="item-title">{product.title}</p>
+                              <p className="item-name">{product?.name}</p>
+                              <p className="item-title">{product?.title}</p>
                               <div className="edit-item-qty">
                                     <span
                                           onClick={() => {
@@ -68,7 +68,7 @@ const AjaxCart = ({ showCart, setShowCart }) => {
                               </div>
                         </div>
                         <div className="price">
-                              <p>${product.price}</p>
+                              <p>&#8358;{product.price}</p>
                               <p onClick={() => handleRemoveFromCart(product.id)}>DELETE</p>
                         </div>
                   </div>

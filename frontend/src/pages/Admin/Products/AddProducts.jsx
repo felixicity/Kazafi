@@ -17,7 +17,6 @@ const AddProducts = () => {
                         stock: "",
                         imageFiles: [],
                         imagePreviews: [],
-                        discount: 0,
                   },
             ],
       });
@@ -31,6 +30,7 @@ const AddProducts = () => {
 
       const handleVariationChange = (index, e) => {
             const { name, value, files } = e.target;
+
             const updatedVariations = [...product.variations];
 
             if (name === "images") {
@@ -70,29 +70,31 @@ const AddProducts = () => {
 
       const handleSubmit = async (e) => {
             e.preventDefault();
-            // Map to clean format
-            const formatted = {
-                  name: product.name,
-                  description: product.description,
-                  category: product.category,
-                  variations: product.variations.map((v) => ({
-                        color: v.color,
-                        hexCode: v.hexCode,
-                        price: parseFloat(v.price),
-                        stock: parseInt(v.stock),
-                        images: v.imageFiles.map((file) => file.name), // Replace with actual upload names
-                  })),
-            };
+
+            const formData = new FormData();
+
+            // Append generic data
+            formData.append("name", product.name);
+            formData.append("category", product.category);
+            formData.append("description", product.description);
+
+            //Append variations data
+            product.variations.forEach((variation, index) => {
+                  formData.append(`variation-[${index + 1}]-[color]`, variation.color);
+                  formData.append(`variation-[${index + 1}]-[hexCode]`, variation.hexCode);
+                  formData.append(`variation-[${index + 1}]-[price]`, variation.price);
+                  formData.append(`variation-[${index + 1}]-[stock]`, variation.stock);
+                  variation.imageFiles.forEach((file) => {
+                        formData.append(`variation-[${index + 1}]-[images]`, file);
+                  });
+            });
 
             try {
-                  const res = await createProduct(formatted).unwrap();
+                  const res = await createProduct(formData).unwrap();
                   console.log(res);
             } catch (err) {
                   console.log(err?.data?.message || err.error);
             }
-
-            // console.log("Submitted Product Object:", formatted);
-            // alert("Product created. Check the console for the formatted output.");
       };
 
       return (
@@ -236,155 +238,3 @@ const AddProducts = () => {
 };
 
 export default AddProducts;
-
-// const AddProducts = () => {
-//       const [isOpen, setIsOpen] = useState(false);
-//       const [selectedFile, setSelectedFile] = useState(null);
-//       const [choiceColors, setChoiceColors] = useState([]);
-
-//       const [createProduct, { isLoading }] = useCreateProductMutation();
-
-//       const commonColors = ["red", "white", "yellow", "gray", "blue", "green", "grey"];
-
-//       const handleSubmit = async (e) => {
-//             e.preventDefault();
-//             e.preventDefault();
-//             const formData = new FormData(e.currentTarget);
-//             formData.append("image", selectedFile);
-
-//             const values = [...formData.entries()];
-
-//             const productMap = new Map(); // creating a map in order to compile colors into an array before sending
-//             let color = [];
-
-//             for (let val of values) {
-//                   if (!val[0].includes("color") && val[1] !== "") {
-//                         productMap.set(...val);
-//                   } else if (val[0].includes("color-")) {
-//                         color.push(val[1]);
-//                   }
-//             }
-
-//             productMap.set("colors", color); // product is now in a map 😎 Thank God for Maps
-
-//             const product = Object.fromEntries(productMap);
-
-//             // Then you pick out the image manually
-//             const imageFile = productMap.get("image");
-
-//             // Now you rebuild the FormData for sending
-//             const finalFormData = new FormData();
-
-//             // Append everything from the object *except* image
-//             for (const [key, value] of Object.entries(product)) {
-//                   if (key !== "image") {
-//                         finalFormData.append(key, value);
-//                   }
-//             }
-
-//             // Append the image file separately
-//             if (imageFile) {
-//                   finalFormData.append("image", imageFile); // MUST match backend field name
-//             }
-
-//             // console.log(Object.fromEntries(finalFormData.entries()));
-// const [createProduct, { isLoading }] = useCreateProductMutation();
-//             try {
-//                   const res = await createProduct(finalFormData).unwrap();
-//                   console.log(res);
-//             } catch (err) {
-//                   console.log(err?.data?.message || err.error);
-//             }
-//       };
-
-//       return (
-//             <div className="add-product">
-//                   <h2>Add new product</h2>
-//                   <p>Basic product info</p>
-//                   <form className="add-product-form" onSubmit={(e) => handleSubmit(e)} action="">
-//                         <div className="form-input">
-//                               <label htmlFor="">Product name</label>
-//                               <input type="text" name="name" />
-//                         </div>
-//                         <div className="form-input">
-//                               <label htmlFor="">Category</label>
-//                               <select name="" id="">
-//                                     <option value="chairs">chairs</option>
-//                                     <option value="sofas">sofas</option>
-//                                     <option value="tables">tables</option>
-//                                     <option value="electronics">electronics and accesories</option>
-//                                     <option value="wardrobes">wardrobes</option>
-//                                     <option value="consoles">consoles</option>
-//                               </select>
-//                         </div>
-//                         <div className="form-input">
-//                               <label htmlFor="">Description</label>
-//                               <textarea name="description"></textarea>
-//                         </div>
-//                         <RoundedBorderBtn icon={<FaPlus />} text="Add Product Variation" />
-
-//                         <div className="form-input">
-//                               <label htmlFor="">Price</label>
-//                               <input type="number" name="price" />
-//                         </div>
-//                         <div className="form-input">
-//                               <label htmlFor="">In-stock</label>
-//                               <input type="number" name="stock" />
-//                         </div>
-//                         <div className="form-input">
-//                               <div>
-//                                     <label htmlFor="">Featured</label>
-//                                     <input type="text" name="featured" />
-//                               </div>
-//                               <div>
-//                                     <label htmlFor="">Pick a background color</label>
-//                                     <input type="color" name="color" />
-//                               </div>
-//                         </div>
-//                         <div className="form-input">
-//                               <label htmlFor="">Discount</label>
-//                               <input type="number" name="discount" />
-//                         </div>
-//                         <a className="add-image" onClick={() => setIsOpen(true)}>
-//                               Add an Image
-//                         </a>
-//                         <ImageUploadModal
-//                               isOpen={isOpen}
-//                               onClose={() => setIsOpen(false)}
-//                               selectedFile={selectedFile}
-//                               setSelectedFile={setSelectedFile}
-//                         />
-//                         <button disabled={isLoading}>Add product</button>
-//                   </form>
-//             </div>
-//       );
-// };
-
-// export default AddProducts;
-
-{
-      /* <div className="form-input">
-                              <p>Pick colors</p>
-                              <div>
-                                    {commonColors.map((color) => (
-                                          <div className={`color-${color}`} key={color}>
-                                                <label htmlFor="">{color}</label>
-                                                <input
-                                                      type="checkbox"
-                                                      name={`color-${color}`}
-                                                      onChange={(e) =>
-                                                            e.target.checked
-                                                                  ? setChoiceColors([...choiceColors, e.target.value])
-                                                                  : setChoiceColors(
-                                                                          choiceColors.filter(
-                                                                                (value) => value !== e.target.value
-                                                                          )
-                                                                    )
-                                                      }
-                                                      value={color}
-                                                />
-                                          </div>
-                                    ))}
-                              </div>
-                        </div> */
-}

@@ -1,15 +1,52 @@
 .promotion-prod {
       display: flex;
-      height: 40rem;
-      background: #fcf9f3;
+      height: 35rem;
+      background: #ffefcf;
+      padding: 2rem;
 
       .image-container {
             width: 55%;
       }
 
       .promotion-prod-details {
+            display: flex;
+            /* justify-content: center; */
+            flex-direction: column;
             background: #ffefcf;
             width: 45%;
             padding: 3rem 1rem;
+
+            h3.promotion-prod-title {
+                  font-family: "Funnel Display";
+                  font-size: 2.8rem;
+                  color: rgb(63, 35, 2);
+            }
+
+            .promotion-prod-cat {
+                  font-size: 1.1rem;
+                  color: rgb(91, 49, 1);
+            }
+
+            .promotion-prod-desc {
+                  margin-top: 1rem;
+                  line-height: 1.8;
+            }
+
+            .promotion-cta {
+                  font-family: "Funnel Display";
+                  padding-block: 1rem;
+                  margin-block: 1rem;
+                  background-color: rgb(63, 35, 2);
+                  border: none;
+                  color: white;
+                  font-size: 1.1rem;
+            }
+
+            .promotion-feature {
+                  p {
+                        font-weight: bold;
+                  }
+                  margin-top: 1rem;
+            }
       }
 }

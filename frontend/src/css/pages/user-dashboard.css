@@ -9,7 +9,6 @@
 
 /* Container */
 .dashboard-container {
-      display: flex;
       min-height: 100vh;
       overflow: scroll;
 }
@@ -18,11 +17,10 @@
 .sidebar {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
       background-color: #f5f8ff; /* equivalent of bg-gray-800 */
       color: black;
       padding: 1rem;
-      width: 20rem;
+      width: 20vw;
       transition: width 0.3s ease;
       max-height: 100vh;
       height: 100vh;

@@ -1,6 +1,7 @@
 import { apiSlice } from "../apiSlice";
 import { addToCart as addToCartClient } from "./clientCartSlice";
 import { discountCalculator } from "../../utilities/discountCalculator";
+
 const CART_URL = "http://localhost:5000/api/cart";
 
 const cartApiSlice = apiSlice.injectEndpoints({
@@ -17,17 +18,17 @@ const cartApiSlice = apiSlice.injectEndpoints({
 
                               // Save to cart format — fine-tuned
                               const refinedCart = data.populatedCart.items.map((item) => ({
-                                    id: item.product._id,
+                                    id: item.variation._id,
                                     name: item.product.name,
                                     quantity: item.quantity,
-                                    image: item.product.images[0],
-                                    price: discountCalculator(item.product.price, item.product.discount),
+                                    image: item.variation.imageURLs[0],
+                                    price: discountCalculator(item.variation.price, item.variation.discount),
                               }));
 
                               // Dispatch to your slice
                               dispatch(addToCartClient(refinedCart));
                         } catch (err) {
-                              console.error("Failed to update localStorage:", err);
+                              console.error("Failed to update localStorage: ", err);
                         }
                   },
             }),
