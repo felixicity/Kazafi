@@ -18,7 +18,7 @@ const createProduct = async (req, res) => {
 
       // Combine the parsed variations with the image URLs
       const productVariations = variations.map((variation, index) => ({
-            _id: `${name}_variation_${index + 1}`,
+            // _id: `${name}_variation_${index + 1}`,
             ...variation,
             imageURLs: imageFilesMap[index + 1] || [],
       }));
@@ -27,12 +27,16 @@ const createProduct = async (req, res) => {
             productData.variations.push(...productVariations);
 
             // Create a new Product
+
             const newProduct = new Product(productData);
 
             const product = await newProduct.save();
             res.status(201).json({ message: "Product Created Successfully", product });
       } catch (error) {
-            res.status(500).json({ message: "Server error occurred while creating product or uploadig images" });
+            res.status(500).json({
+                  message: "Server error occurred while creating product or uploadig images",
+                  specificError: error,
+            });
       }
 };
 

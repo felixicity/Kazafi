@@ -1,6 +1,4 @@
-import { orders } from "../../../utilities/orderData";
-
-const OrderTable = ({ handleClick }) => {
+const OrderTable = ({ orders, handleClick }) => {
       return (
             <table className="order-table">
                   <thead>
@@ -13,17 +11,21 @@ const OrderTable = ({ handleClick }) => {
                         </tr>
                   </thead>
                   <tbody>
-                        {orders.map((order) => (
-                              <tr onClick={() => handleClick(order.id)} key={order.id}>
-                                    <td>{order.id}</td>
-                                    <td>{order.customer}</td>
+                        {orders.map((order, index) => (
+                              <tr onClick={() => handleClick(order._id)} key={order._id}>
                                     <td>
-                                          <span className={order.shipping}>{order.shipping}</span>
+                                          #PO-{index < 100 ? `00${index + 1}` : index + 1}-{order._id}
+                                    </td>
+                                    <td>{order.customer.name}</td>
+                                    <td>
+                                          <span className={order.orderStatus.toLowerCase()}>{order.orderStatus}</span>
                                     </td>
                                     <td>
-                                          <span className={order.payment}>{order.payment}</span>
+                                          <span className={order.paymentStatus.toLowerCase()}>
+                                                {order.paymentStatus}
+                                          </span>
                                     </td>
-                                    <td>{order.date}</td>
+                                    <td>{order.createdAt.split("T")[0]}</td>
                               </tr>
                         ))}
                   </tbody>

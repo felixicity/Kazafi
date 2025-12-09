@@ -20,8 +20,8 @@ section {
 
                   p {
                         position: absolute;
-                        font-weight: 550;
-                        font-size: 0.9rem;
+                        /* font-weight: 550; */
+                        font-size: 0.8rem;
                         margin: 1rem 0.5rem;
                         background: white;
                         padding: 0.25rem 0.8rem;

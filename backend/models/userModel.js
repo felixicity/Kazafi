@@ -4,7 +4,6 @@ const userSchema = mongoose.Schema(
       {
             name: {
                   type: String,
-                  required: [true, "name is required"],
                   trim: true,
             },
             email: {
@@ -27,8 +26,7 @@ const userSchema = mongoose.Schema(
                   street: { type: String },
                   city: { type: String },
                   state: { type: String },
-                  country: { type: String, default: "Nigeria" },
-                  zipCode: { type: String },
+                  country: { type: String },
             },
             isAdmin: {
                   type: Boolean,
@@ -38,6 +36,8 @@ const userSchema = mongoose.Schema(
                   type: Boolean,
                   default: false, // Can be used for email verification
             },
+            verificationToken: String, // <-- New field
+            tokenExpires: Date,
       },
       {
             timestamps: true,

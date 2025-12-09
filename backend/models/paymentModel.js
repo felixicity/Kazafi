@@ -27,7 +27,7 @@ const paymentSchema = new mongoose.Schema(
             paymentMethod: { type: String, default: "card" },
             provider: {
                   type: String,
-                  enum: ["Paystack", "Flutterwave", "Stripe"],
+                  enum: ["paystack", "flutterwave"],
                   required: true,
             },
       },

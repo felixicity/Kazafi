@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
-import { FiMenu, FiHome, FiUser, FiSettings, FiLogOut, FiShoppingBag } from "react-icons/fi";
+import { FiMenu, FiHome, FiUser, FiSettings, FiMessageSquare, FiLogOut, FiShoppingBag } from "react-icons/fi";
 
 const UserDashboardLayout = () => {
       const [collapsed, setCollapsed] = useState(false);
@@ -10,6 +10,7 @@ const UserDashboardLayout = () => {
             { name: "Dashboard", icon: <FiHome />, path: "#" },
             { name: "Orders", icon: <FiShoppingBag />, path: "#" },
             { name: "Profile", icon: <FiUser />, path: "#" },
+            { name: "Messages", icon: <FiMessageSquare />, path: "#" },
             { name: "Preferences", icon: <FiSettings />, path: "#" },
             { name: "Logout", icon: <FiLogOut />, path: "#" },
       ];

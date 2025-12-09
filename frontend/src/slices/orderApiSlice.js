@@ -19,7 +19,7 @@ const ordersApiSlice = apiSlice.injectEndpoints({
                         body: data,
                   }),
             }),
-            getUserOrders: builder.mutation({
+            getUserOrders: builder.query({
                   query: () => ({
                         url: ORDERS_URL,
                         method: "GET",
@@ -31,15 +31,15 @@ const ordersApiSlice = apiSlice.injectEndpoints({
                         method: "DELETE",
                   }),
             }),
-            getOrder: builder.mutation({
+            getOrder: builder.query({
                   query: (PARAMS) => ({
                         url: `${ORDERS_URL}/${PARAMS}`,
                         method: "GET",
                   }),
             }),
-            getOrders: builder.mutation({
+            getOrders: builder.query({
                   query: () => ({
-                        url: ORDERS_URL,
+                        url: `${ORDERS_URL}/orders`,
                         method: "GET",
                   }),
             }),
@@ -48,8 +48,8 @@ const ordersApiSlice = apiSlice.injectEndpoints({
 
 export const {
       useCreateOrderMutation,
-      useGetUserOrdersMutation,
+      useGetUserOrdersQuery,
       useCancelOrderMutation,
-      useGetOrderMutation,
-      useGetOrdersMutation,
+      useGetOrderQuery,
+      useGetOrdersQuery,
 } = ordersApiSlice;

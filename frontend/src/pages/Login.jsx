@@ -67,7 +67,7 @@ const Login = () => {
                                     </label>
                                     <div className="password" ref={passwordRef}>
                                           <input
-                                                type="password"
+                                                type={showPassword ? "text" : "password"}
                                                 name="password"
                                                 id="password"
                                                 // value={showPassword && passwordRef.current.children[0].value}

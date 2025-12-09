@@ -23,7 +23,9 @@ const ProductCard = () => {
                         src={product?.variations[0]?.imageURLs.length > 0 && product?.variations[0]?.imageURLs[0]}
                         alt={product?.name}
                   />
-                  <span className="promotion">Limited Edition</span>
+                  {product?.variations[0]?.discount && (
+                        <span className="promotion"> {product?.variations[0]?.discount}% off</span>
+                  )}
                   <div className="product-details">
                         <div className="title">
                               <p className="name">{product?.name}</p>

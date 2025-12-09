@@ -8,12 +8,13 @@
 
       li a {
             text-decoration: none;
-            color: black;
+            text-transform: uppercase;
+            color: rgb(38, 36, 36);
             padding: 0.4rem 1.2rem;
             border-radius: 25px;
             border: 1px solid var(--soft-shadow);
-            font-weight: 550;
-            font-size: 0.9rem;
+            /* font-weight: 550; */
+            font-size: 0.7rem;
             transition: background 0.2s;
       }
 

@@ -1,21 +1,23 @@
 import mongoose from "mongoose";
 
+//  {
+//             id: "#KAZ-8476364",
+//             customer: "1294jjfn4fu823227e2",
+//             shipping: "processing", // processing, shipped, delivered
+//             date: "12/03/25",
+//             items: [{ name: "table" }],
+//             // shipping: 8 Romodome str, Alanta, USA
+//             payment: "pending", // pending , paid, refund
+//       },
+
 const OrderSchema = new mongoose.Schema(
       {
-            user: {
+            customer: {
                   type: mongoose.Schema.Types.ObjectId,
                   ref: "User",
                   required: true,
             },
-            items: [
-                  {
-                        product: {
-                              type: mongoose.Schema.Types.ObjectId,
-                              ref: "Product",
-                              required: true,
-                        },
-                  },
-            ],
+            items: [Object],
             totalQuantity: {
                   type: Number,
                   required: true,
@@ -24,30 +26,22 @@ const OrderSchema = new mongoose.Schema(
             totalAmount: {
                   type: Number,
                   required: true,
-            },
-            shippingAddress: {
-                  street: { type: String, required: true },
-                  busstop: { type: String },
-                  city: { type: String, required: true },
-                  state: { type: String, required: true },
-                  country: { type: String, default: "Nigeria" },
-                  phone: { type: String, required: true },
-                  postalcode: { type: String },
+                  min: 1,
             },
             paymentMethod: {
                   type: String,
-                  enum: ["Paystack", "Flutterwave", "Qrcode", "Cash on Delivery"],
                   required: true,
             },
             paymentStatus: {
                   type: String,
-                  enum: ["Pending", "Paid", "Failed"],
-                  default: "Pending",
+                  enum: ["pending", "paid", "failed"],
+                  default: "pending",
             },
+
             orderStatus: {
                   type: String,
-                  enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
-                  default: "Processing",
+                  enum: ["processing", "shipped", "delivered", "cancelled"],
+                  default: "processing",
             },
             isPaid: {
                   type: Boolean,
@@ -69,3 +63,11 @@ const OrderSchema = new mongoose.Schema(
 
 const Order = mongoose.model("Order", OrderSchema);
 export default Order;
+
+// shippingAddress: {
+//                   street: { type: String, required: true },
+//                   city: { type: String, required: true },
+//                   state: { type: String, required: true },
+//                   country: { type: String, default: "Nigeria" },
+//                   phone: { type: String, required: true },
+//             },

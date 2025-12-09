@@ -1,21 +1,29 @@
 import OrderTable from "./OrderTable";
 import { useState } from "react";
-import { orders } from "../../../utilities/orderData";
 import OrderDetails from "./OrderDetails";
+import { useGetOrdersQuery } from "../../../slices/orderApiSlice";
 
 const OrderDashboard = () => {
+      // Get orders in my database
+      const { data, isLoading, error } = useGetOrdersQuery();
+
       const [showOrderDetails, setShowOrderDetails] = useState(false);
       const [orderData, setOrderData] = useState(null);
+      //   console.log(data);
 
-      const handleClick = (orderId) => {
-            setOrderData(orders.filter((order) => order.id == orderId));
+      if (isLoading) return <p>Loading products...</p>;
+      if (error) return <p>Something went wrong!</p>;
+
+      const handleClick = async (orderId) => {
+            setOrderData(data.filter((order) => order._id === orderId)[0]);
             setShowOrderDetails(true);
       };
+
       return (
             <div>
                   <h2>All orders</h2>
-                  <OrderTable handleClick={handleClick} />
-                  {showOrderDetails && <OrderDetails orderData={orderData} setShowOrderDetails={setShowOrderDetails} />}
+                  <OrderTable orders={data} handleClick={handleClick} />
+                  {showOrderDetails && <OrderDetails orders={orderData} setShowOrderDetails={setShowOrderDetails} />}
             </div>
       );
 };

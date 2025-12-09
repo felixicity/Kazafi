@@ -1,14 +1,17 @@
-// import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { clearCart } from "../slices/cart/clientCartSlice";
 import { useCreateOrderMutation } from "../slices/orderApiSlice";
 import { savePaymentMethod } from "../slices/cart/clientCartSlice";
+import { useMakePaymentMutation } from "../slices/paymentApiSlice";
+import Modal from "./Modal";
 
 const Checkout = () => {
       const [delivery, setDelivery] = useState("");
+      const [showAddress, setShowAddress] = useState(false);
 
       const [createOrder, { isLoading }] = useCreateOrderMutation();
-
+      const [makePayment, { error }] = useMakePaymentMutation();
       const dispatch = useDispatch();
 
       const storePaymentMethod = (e) => {
@@ -22,14 +25,29 @@ const Checkout = () => {
             e.preventDefault();
 
             try {
-                  await createOrder({
+                  const res = await createOrder({
                         deliveryMethod: delivery,
                         shippingAddress: delivery == "delivery" ? shippingAddress : "local pick-up",
                         paymentMethod,
                   }).unwrap();
+
+                  const payment = await makePayment({
+                        orderId: res.order._id,
+                        provider: res.order.paymentMethod,
+                  }).unwrap();
+                  console.log(payment);
+
+                  if (payment) {
+                        dispatch(clearCart);
+                        window.location.href = payment.paymentUrl;
+                  }
             } catch (err) {
                   console.log(err?.data?.message || err.error);
             }
+      };
+      const handleClick = (e) => {
+            setDelivery(e.target.value);
+            setShowAddress(true);
       };
 
       return (
@@ -56,12 +74,23 @@ const Checkout = () => {
                                           name="delivery-option"
                                           id="delivery"
                                           value="delivery"
-                                          onClick={(e) => setDelivery(e.target.value)}
+                                          onClick={handleClick}
                                     />
                                     <span>Delivery</span>
                               </div>
                         </div>
                   </details>
+                  <Modal
+                        isOpen={showAddress}
+                        buttonPrimaryText="Continue"
+                        buttonSecondaryText="Change address"
+                        title="Address Confirmation"
+                        text="Continue with this address?"
+                        onClose={() => setShowAddress(false)}
+                        secondaryTask={"I am only secondary"}
+                  >
+                        <p>Divine International Academy, Rafin Zurfi, Bauchi State, Nigeria.</p>
+                  </Modal>
                   <details>
                         <summary>Payment information</summary>
                         <h3>Pay with:</h3>
@@ -111,7 +140,7 @@ const Checkout = () => {
                               </div>
                         </div>
 
-                        <form action="" className="card-details">
+                        {/* <form action="" className="card-details">
                               <div className="form-group">
                                     <label htmlFor="card-number">Card number</label>
                                     <input type="text" id="card-number" placeholder="1234 1234 1234 1234" />
@@ -136,13 +165,18 @@ const Checkout = () => {
                                           <input type="text" id="postal-code" />
                                     </div>
                               </div>
-                        </form>
+                        </form> */}
                   </details>
                   <details>
                         <summary>Order confirmation</summary>
                         <div className="confirm-order">
                               <p>I have thoroughly checked through the order and I am ready to pay </p>
-                              <input type="button" value="Pay Now" onClick={handleOrder} />
+                              <input
+                                    type="button"
+                                    value={isLoading ? "Processing order ..." : "Pay now"}
+                                    disabled={isLoading}
+                                    onClick={handleOrder}
+                              />
                         </div>
                   </details>
             </div>

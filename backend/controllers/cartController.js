@@ -21,7 +21,7 @@ export const addToCart = async (req, res) => {
                         user: userId,
                         items: item,
                         totalAmount: variation.price,
-                        totalQuantity: variation.quantity,
+                        totalQuantity: quantity,
                   });
             } else {
                   // Check if product already exists in cart
@@ -56,17 +56,33 @@ export const updateCartItem = async (req, res) => {
       const { quantity } = req.body;
       const userId = req.userId;
 
-      try {
-            let cart = await Cart.findOne({ user: userId });
-            const item = cart.id(itemId);
+      //   console.log({ itemId, quantity });
 
-            if (!item) {
+      try {
+            const updatedCart = await Cart.findOneAndUpdate(
+                  { user: userId, "items.variation._id": itemId },
+                  { $set: { "items.$.quantity": quantity } },
+                  { new: true } // Return the updated document
+            );
+
+            let totalQuantity = 0;
+            let totalAmount = 0;
+
+            if (!updatedCart) {
                   return res.status(404).json({ message: "Cart item not found" });
             }
 
-            item.quantity = quantity; // Update the quantity
+            updatedCart.items.forEach((item) => {
+                  totalQuantity += item.quantity;
+                  totalAmount += item.quantity * item.variation.price;
+            });
 
-            await cart.save();
+            const cart = await Cart.findOneAndUpdate(
+                  { _id: updatedCart._id },
+                  { totalQuantity, totalAmount },
+                  { new: true }
+            );
+
             res.status(200).json({ message: "Cart item updated", cart: cart });
       } catch (error) {
             res.status(500).json({ message: "Server error", error });
@@ -75,7 +91,7 @@ export const updateCartItem = async (req, res) => {
 
 // Remove an item from the cart
 export const removeFromCart = async (req, res) => {
-      const { itemid } = req.params;
+      const { itemId } = req.params;
 
       const userId = req.userId;
 
@@ -87,7 +103,8 @@ export const removeFromCart = async (req, res) => {
             }
 
             // Find the item in the cart
-            const itemIndex = cart.items.findIndex((item) => item.variation._id.toString() === itemid);
+            const item = cart.items.find((item) => item.variation._id.toString() === itemId);
+            const itemIndex = cart.items.findIndex((item) => item.variation._id.toString() === itemId);
 
             if (itemIndex === -1) {
                   return res.status(404).json({ message: "Cart item not found" });
@@ -95,6 +112,8 @@ export const removeFromCart = async (req, res) => {
 
             // Remove the item
             cart.items.splice(itemIndex, 1);
+            cart.totalQuantity -= item.quantity;
+            cart.totalAmount -= item.variation.price * item.quantity;
 
             await cart.save();
             res.status(200).json({ message: "Cart item removed", cart });

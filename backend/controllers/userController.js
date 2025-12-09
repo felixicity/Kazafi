@@ -1,13 +1,19 @@
 import bcrypt from "bcryptjs";
 import User from "../models/userModel.js";
 import { generateToken } from "../utils.js";
+import { sendVerificationEmail } from "../utils/sendMail.js";
+
+const generateVerificationToken = () => {
+      const UUID = crypto.randomUUID(); // Generates a 64-character hex string
+      return UUID;
+};
 
 // @desc Register a new user
 // route POST "api/users"
 // @access Public
 const registerUser = async (req, res) => {
       // Collect the information from the users request body
-      const { name, email, password } = req.body;
+      const { email, password } = req.body;
 
       try {
             // Check the database to ensure that user is new
@@ -15,37 +21,90 @@ const registerUser = async (req, res) => {
 
             // Return an error in your response body if a user was found
             if (userExists) {
-                  res.status(400).json({ message: "Already an Existing User" });
+                  //if user exists and is verified,return an error.
+                  if (userExists.isVerified) {
+                        return res.status(400).json({ message: "User already exists and is verified." });
+                  }
+                  res.status(400).json({ message: "User exists, please check your email for verification." });
             }
 
             // If no user was found, hash the user provided passsword
             const hashedPassword = await bcrypt.hash(password, 10);
 
+            // --- NEW VERIFICATION LOGIC START ---
+            const verificationToken = generateVerificationToken();
+            const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // Expires in 24 hours
+            // --- NEW VERIFICATION LOGIC END ---
+
             // Create a new User Model to fit with our USER MODEL in the database
             const newUser = new User({
-                  name,
                   email,
                   password: hashedPassword,
+                  isVerified: false, // <-- Crucial: Default to false
+                  verificationToken: verificationToken, // <-- Save the token
+                  tokenExpires: tokenExpires, // <-- Save the expiration time
             });
 
             // Save the newUser to the database
             const user = await newUser.save();
 
+            // --- NEW ACTION: Send Verification Email ---
+            await sendVerificationEmail(user.email, verificationToken);
+
             //generate a token for the user
-            const token = generateToken(user);
+            // const token = generateToken(user);
 
             // Save the token to the http-only Cookie
-            res.cookie("authToken", token, { httpOnly: true, secure: true, sameSite: "strict" });
+            // res.cookie("authToken", token, { httpOnly: true, secure: true, sameSite: "strict" });
 
             //Post request sucessful  ✅
             res.status(201).json({
-                  userId: user._id,
-                  name: user.name,
+                  message: "Registration successful! Please check your email to verify your account.",
                   email: user.email,
             });
       } catch (error) {
-            // If something went wrong ❌
+            console.error(error);
             res.status(500).json({ message: "Server Error in registering user" });
+      }
+};
+
+// userController.js (Add this new function)
+const verifyUser = async (req, res) => {
+      const { token } = req.query; // Get the token from the URL query string
+
+      if (!token) {
+            return res.status(400).send("Invalid verification link.");
+      }
+
+      try {
+            // 1. Find the user by the token and check expiration
+            const user = await User.findOne({
+                  verificationToken: token,
+                  tokenExpires: { $gt: Date.now() }, // $gt checks if tokenExpires is Greater Than current time
+            });
+
+            if (!user) {
+                  // Handle expired or invalid token
+                  return res.status(400).send("Verification link is invalid or has expired. Please register again.");
+            }
+
+            // 2. Update the user status
+            user.isVerified = true;
+            user.verificationToken = undefined; // Clear the token
+            user.tokenExpires = undefined; // Clear the expiration date
+            await user.save();
+
+            // 3. Optional: Log the user in immediately after successful verification
+            // You can generate and set the JWT cookie here if you want to auto-login.
+            const authToken = generateToken(user);
+            res.cookie("authToken", authToken, { httpOnly: true, secure: true, sameSite: "strict" });
+
+            // 4. Redirect the user to a success page
+            // Use a redirect for a better user experience after a GET request:
+            return res.redirect("http://localhost:3000/verify/verification-success"); // Redirect to a success page on your frontend
+      } catch (error) {
+            console.error(error);
+            res.status(500).send("Verification failed due to a server error.");
       }
 };
 
@@ -59,13 +118,13 @@ const loginUser = async (req, res) => {
             const user = await User.findOne({ email });
 
             if (!user) {
-                  return res.status(400).json({ message: "Invalid email credentials" });
+                  return res.status(400).json({ message: "Invalid credentials" });
             }
 
             // Check password
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                  return res.status(400).json({ message: "Invalid password credentials" });
+                  return res.status(400).json({ message: "Invalid credentials" });
             }
 
             // Generate JWT
@@ -160,4 +219,4 @@ const logoutUser = (req, res) => {
       }
 };
 
-export { registerUser, loginUser, getUserProfile, getAllUsers, updateUserProfile, logoutUser };
+export { registerUser, verifyUser, loginUser, getUserProfile, getAllUsers, updateUserProfile, logoutUser };

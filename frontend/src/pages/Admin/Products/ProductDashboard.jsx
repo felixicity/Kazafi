@@ -3,7 +3,6 @@ import StatusBanner from "./StatusBanner";
 import Tabs from "./Tabs";
 import ProductTable from "./ProductTable";
 import ProductSidebar from "./ProductSidebar";
-import ImageUploadModal from "./ImageUploadModal";
 
 const ProductDashboard = () => {
       return (
@@ -13,7 +12,6 @@ const ProductDashboard = () => {
                         <StatusBanner />
                         <Tabs />
                         <ProductTable />
-                        <ImageUploadModal />
                   </div>
                   <ProductSidebar />
             </div>

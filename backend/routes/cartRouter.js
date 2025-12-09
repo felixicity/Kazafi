@@ -4,14 +4,23 @@ import { addToCart, updateCartItem, removeFromCart, getCart, clearCart } from ".
 
 const router = express.Router();
 
+// router.use((req, res, next) => {
+//       console.log("Incoming Cart Request:");
+//       console.log("Method:", req.method);
+//       console.log("URL:", req.originalUrl);
+//       console.log("Headers:", req.headers);
+//       console.log("Body:", req.body);
+//       next(); // Pass control to the next middleware
+// });
+
 // Add item to the cart
 router.post("/add", protectMiddleware, addToCart);
 
 // Update quantity of an item in the cart
-router.put("/update/:productid", protectMiddleware, updateCartItem);
+router.put("/update/:itemId", protectMiddleware, updateCartItem);
 
 // Remove item from the cart
-router.delete("/remove/:itemid", protectMiddleware, removeFromCart);
+router.delete("/remove/:itemId", protectMiddleware, removeFromCart);
 
 // Get all items in the cart
 router.get("/", protectMiddleware, getCart);

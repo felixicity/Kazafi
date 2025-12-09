@@ -7,6 +7,7 @@ import {
       updateUserProfile,
       logoutUser,
       getAllUsers,
+      verifyUser,
 } from "../controllers/userController.js";
 import { protectMiddleware, adminMiddleware } from "../middleware/authMiddleware.js";
 
@@ -16,12 +17,12 @@ const router = express.Router();
 router.post(
       "/register",
       [
-            body("name").notEmpty().withMessage("Name is required"),
             body("email").isEmail().withMessage("Invalid email address"),
             body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
       ],
       registerUser
 );
+router.get("/verify", verifyUser);
 
 // Login route
 router.post(

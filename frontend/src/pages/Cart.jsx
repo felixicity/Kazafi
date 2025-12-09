@@ -26,24 +26,26 @@ const Cart = () => {
       } else {
             // getCart.cart.items.product
             cartItemsList = cartItems.map((item) => (
-                  <div className="cart-product" key={item.product._id}>
-                        <div className="cart-product-img">
+                  <div className="cart-product" key={item.variation._id}>
+                        <div className="cart-product-details">
+                              <div className="details">
+                                    <p className="product-name">{item.product?.name}</p>
+                                    <p className="product-title">{item.product?.title}</p>
+                                    <p className="product-price">&#8358;{item.variation.price}</p>
+                                    <div className="product-available">
+                                          <div>
+                                                Qty: <span>{item.quantity}</span>
+                                          </div>
+                                          <p>Only {item.variation?.stock} available in stock</p>
+                                    </div>{" "}
+                              </div>
                               <img src={item.variation?.imageURLs[0]} alt={item.product?.name} />
                         </div>
                         <div className="product-details">
-                              <p className="product-name">{item.product?.name}</p>
-                              <p className="product-title">{item.product?.title}</p>
-                              <p className="product-price">&#8358;{item.variation.price}</p>
-                              <div className="product-available">
-                                    <div>
-                                          Qty: <span>{item.quantity}</span>
-                                    </div>
-                                    <p>Only {item.product.stock} available in stock</p>
-                              </div>
                               <div className="product-color">
                                     <div className="chosen-product-color">
-                                          <span style={{ backgroundColor: `${item.product?.colors}` }}></span>
-                                          {item.product?.colors}
+                                          <span style={{ backgroundColor: `${item.variation?.hexCode}` }}></span>
+                                          {item.variation?.color}
                                     </div>
                                     <RoundedBorderBtn icon={<FiEdit2 />} text="Edit" />
                               </div>
@@ -71,11 +73,9 @@ const Cart = () => {
                                     The sales tax is calculated when you select shipping address at checkout.
                               </p>
                               <div className="order-detail">
-                                    <p>My Cart ({cartItems.length} item)</p> <span>&#8358;{Cart.totalAmount}</span>
+                                    <p>My Cart ({cartItems.length} item)</p> <span>&#8358;{cart.totalAmount}</span>
                               </div>
-                              <div className="order-detail">
-                                    <p>Sales tax </p> <span>-- &#8358;45</span>
-                              </div>
+
                               <div className="order-detail">
                                     <p>Import duties</p> <span>-- &#8358; 1800</span>
                               </div>
@@ -93,7 +93,7 @@ const Cart = () => {
                                     <span>&#8358; {cart.totalAmount}</span>
                               </div>
                               <Link className="checkout-btn" to="./information">
-                                    Secure checkout
+                                    Proceed to checkout
                               </Link>
                         </aside>
                   )}

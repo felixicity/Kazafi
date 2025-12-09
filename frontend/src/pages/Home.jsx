@@ -15,8 +15,10 @@ const Home = () => {
                         <div className="secondary-nav wrapper">
                               <ul>
                                     {!userInfo && (
-                                          <li title="sign in">
-                                                <Link to="/signup">Sign up</Link>
+                                          <li title="sign up">
+                                                <Link className="link p-2 bg-orange-500" to="/signup">
+                                                      Sign up
+                                                </Link>
                                           </li>
                                     )}
                                     <li title="make enquires">Kazafi Help Center</li>
@@ -26,13 +28,9 @@ const Home = () => {
                               </ul>
                         </div>
                         <Navigation />
-                        <main className="wrapper">
+                        <main className="wrapper home-main">
                               <div className="hero">
-                                    <em>
-                                          <h1 className="hero-header">
-                                                You love it ? <br /> We Sell it.
-                                          </h1>
-                                    </em>
+                                    <h1 className="hero-header">Create your style</h1>
                                     <p>
                                           Shop from Africa&apos;s finest Resources. Crafted by the best. Where color and
                                           culture combine to meet your taste.
@@ -46,13 +44,15 @@ const Home = () => {
                                           </a>
                                     </div>
                               </div>
-                              <img className="carousel-1" src="/kazafi/eno-chair.png" alt="eno-chair" />
+                              {/* <img className="carousel-1" src="/kazafi/eno-chair.png" alt="eno-chair" /> */}
                         </main>
                   </div>
                   <GroupingList>
                         {category.map((cat) => (
                               <li key={cat}>
-                                    <Link to={`/shop/${cat}`}>{cat}</Link>
+                                    <Link className="cat-link" to={`/shop/${cat}`}>
+                                          {cat}
+                                    </Link>
                               </li>
                         ))}
                   </GroupingList>

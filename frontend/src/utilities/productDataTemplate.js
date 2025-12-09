@@ -53,7 +53,6 @@ export const products = [
             price: 10000,
             colors: ["black", "white"],
             discount: 25,
-            featured: ["hot deals"],
       },
       {
             id: 5,
@@ -100,11 +99,12 @@ export const products = [
             title: "Right Corner Piece",
             description:
                   " Made from the finest silk material, with the best italian woods, this armless chair gives you the confidence, unique style and comfort with elegance.",
-            img: "labi-tv-console",
+            img: "labi-tv-console-front-view",
             rating: 4.5,
             category: "console",
             price: 35000,
             discount: 18,
+            featured: ["hot deals", "#D7CDC1"],
       },
       {
             id: 9,

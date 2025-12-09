@@ -21,75 +21,86 @@
       .cart-product {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
             border-bottom: 1px solid black;
 
-            .cart-product-img {
-                  grid-column: 1/3;
+            .cart-product-details {
+                  grid-column: 1/4;
+                  display: flex;
+                  flex-direction: row-reverse;
+
+                  img {
+                        width: 50%;
+                  }
+                  .details {
+                        width: 50%;
+                        .product-name {
+                              margin-block-start: 2rem;
+                              font-size: 0.9rem;
+                              color: #545454;
+                              font-weight: 500;
+                              text-transform: uppercase;
+                        }
+
+                        .product-title {
+                              font-size: 1.25rem;
+                              font-weight: 550;
+                              color: #5d5959;
+                        }
+
+                        .product-price {
+                              font-size: 1.3rem;
+                              margin-block: 1rem;
+                        }
+                  }
+                  .product-available {
+                        display: flex;
+                        flex-direction: column-reverse;
+                        align-items: baseline;
+                        gap: 1rem;
+                  }
             }
 
             .product-details {
-                  grid-column: 3/-1;
+                  grid-column: 4/-1;
 
-                  .product-name {
-                        margin-block-start: 2rem;
-                        font-size: 1.5rem;
-                        font-weight: 550;
-                  }
-
-                  .product-title {
-                        font-size: 1.25rem;
-                        font-weight: 550;
-                        color: #5d5959;
-                  }
-
-                  .product-price {
-                        font-size: 1.3rem;
-                        margin-block: 1rem;
-                  }
-
-                  .product-available {
-                        display: flex;
-                        align-items: baseline;
-                        gap: 1rem;
-
-                        .edit-product-qty {
-                              margin-block-start: 1rem;
-                              border: 1px solid var(--brand-black);
-                              display: flex;
-                              align-items: center;
-                              justify-content: space-between;
-                              padding: 0.25rem 0.7rem;
-                              width: 6rem;
-                              border-radius: 2.5px;
-
-                              :not(span:nth-child(2)) {
-                                    font-weight: 550;
-                                    font-size: 1.25rem;
-                                    cursor: pointer;
-                              }
-                        }
-
-                        p {
-                              color: rgb(196, 0, 0);
-                        }
-                  }
-                  .product-color {
+                  .edit-product-qty {
                         margin-block-start: 1rem;
+                        border: 1px solid var(--brand-black);
                         display: flex;
                         align-items: center;
                         justify-content: space-between;
+                        padding: 0.25rem 0.7rem;
+                        width: 6rem;
+                        border-radius: 2.5px;
 
-                        .chosen-product-color {
-                              display: flex;
-                              align-items: center;
-                              gap: 1rem;
+                        :not(span:nth-child(2)) {
+                              font-weight: 550;
+                              font-size: 1.25rem;
+                              cursor: pointer;
+                        }
+                  }
 
-                              span {
-                                    width: 30px;
-                                    height: 30px;
-                                    border-radius: 50%;
-                              }
+                  p {
+                        color: rgb(196, 0, 0);
+                  }
+            }
+            .product-color {
+                  margin-block-start: 1rem;
+                  display: flex;
+                  align-items: end;
+                  flex-direction: column-reverse;
+                  height: 80%;
+                  justify-content: space-between;
+
+                  .chosen-product-color {
+                        display: flex;
+                        align-items: center;
+                        gap: 1rem;
+
+                        span {
+                              width: 30px;
+                              height: 30px;
+                              border-radius: 50%;
                         }
                   }
             }

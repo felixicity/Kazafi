@@ -7,7 +7,7 @@ header {
 
 nav.desktop-nav {
       display: flex;
-      align-items: center;
+      align-items: last baseline;
       justify-content: space-between;
       width: 100%;
 
@@ -15,7 +15,8 @@ nav.desktop-nav {
             display: flex;
             list-style: none;
             font-weight: 550;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
 
             li {
                   margin-right: 2rem;
@@ -74,8 +75,9 @@ nav.desktop-nav {
       padding-block-start: 1rem;
 
       li {
+            text-transform: uppercase;
             word-spacing: -2px;
-            font-size: 0.89rem;
+            font-size: 0.74rem;
             cursor: pointer;
             transition: text-decoration 5s linear;
       }

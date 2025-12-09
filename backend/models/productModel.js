@@ -33,6 +33,12 @@ const VariationSchema = new mongoose.Schema({
       },
 });
 
+// For the materials from which a product was made
+const MaterialSchema = new mongoose.Schema({
+      title: String,
+      detail: String,
+});
+
 const ProductSchema = new mongoose.Schema(
       {
             name: {
@@ -44,12 +50,17 @@ const ProductSchema = new mongoose.Schema(
                   type: String,
                   required: [true, "Product description is required"],
             },
+            details: {
+                  type: String,
+                  required: [true, "Details about the product are required"],
+            },
             category: {
                   type: String,
-                  enum: ["chairs", "sofas", "tables", "wardrobes", "consoles"], // Add more categories if needed
+                  //   enum: ["chairs", "sofas", "tables", "wardrobes", "consoles"], // Add more categories if needed
                   required: [true, "Product category is required"],
             },
             variations: [VariationSchema], // Multiple color variants
+            materials: [MaterialSchema],
             isFeatured: {
                   type: Boolean,
                   default: false, // Determines if the product is shown as featured

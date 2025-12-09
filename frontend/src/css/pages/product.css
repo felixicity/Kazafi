@@ -147,6 +147,7 @@
                         color: white;
                         background: #000;
                         border-radius: 2.5rem;
+                        cursor: pointer;
                   }
             }
             .other-details {

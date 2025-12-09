@@ -4,30 +4,35 @@ import Cart from "../models/cartModel.js";
 export const placeOrder = async (req, res) => {
       try {
             const userId = req.userId;
-            const { deliveryMethod, shippingAddress, paymentMethod } = req.body;
+            const { deliveryMethod, paymentMethod } = req.body;
 
             // Get user's cart
-            const cart = await Cart.findOne({ user: userId }).populate("items.product");
+            const cart = await Cart.findOne({ user: userId });
 
-            if (!cart || cart.items.length === 0) {
+            if (!cart) {
+                  return res.status(400).json({ message: "You don't have an account yet" });
+            }
+
+            if (cart.items.length < 1) {
                   return res.status(400).json({ message: "Your cart is empty" });
             }
 
-            // Calculate total price
-            const totalPrice = cart.items.reduce((acc, item) => acc + item.quantity * item.price, 0);
+            // const product = {
+            //     name:item.
+            // }
 
             // Create new order
             const order = new Order({
-                  user: userId,
+                  customer: userId,
                   items: cart.items.map((item) => ({
-                        product: item.product._id,
+                        productId: item.product,
+                        product: item.variation,
                         quantity: item.quantity,
-                        price: item.product.price,
                   })),
-                  shippingAddress,
                   paymentMethod,
                   deliveryMethod,
-                  totalPrice,
+                  totalAmount: cart.totalAmount,
+                  totalQuantity: cart.totalQuantity,
                   isPaid: false,
             });
 
@@ -55,7 +60,7 @@ export const getUserOrders = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
       try {
-            const order = await Order.findById(req.params.orderId).populate("user", "name email");
+            const order = await Order.findById(req.params.orderId).populate("customer", "name email");
 
             if (!order) {
                   return res.status(404).json({ message: "Order not found" });
@@ -90,7 +95,15 @@ export const cancelOrder = async (req, res) => {
 */
 export const getAllOrders = async (req, res) => {
       try {
-            const orders = await Order.find().populate("user", "name email").sort({ createdAt: -1 });
+            const orders = await Order.find()
+                  .populate({ path: "customer", model: "User", select: "name email" })
+                  .populate({
+                        path: "items.productId",
+                        model: "Product",
+                        select: "name category",
+                  })
+                  .sort({ createdAt: -1 });
+            // console.log("All Orders: ", orders);
             res.status(200).json(orders);
       } catch (error) {
             console.error(error);

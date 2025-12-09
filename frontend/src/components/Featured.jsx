@@ -6,7 +6,13 @@ const Featured = () => {
             .map((item) => (
                   <div className="featured-card" style={{ backgroundColor: `${item.featured[1]}` }} key={item.id}>
                         <p>{item.featured[0]}</p>
-                        <img src={`/kazafi/${item.img}-${item.colors[0]}.png`} />
+                        <img
+                              src={
+                                    item?.colors
+                                          ? `/kazafi/${item.img}-${item?.colors[0]}.png`
+                                          : `/kazafi/${item.img}.png`
+                              }
+                        />
                   </div>
             ));
       return (

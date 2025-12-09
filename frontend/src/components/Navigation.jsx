@@ -1,32 +1,27 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Button from "./Button";
 import Avatar from "../utilities/Avatar";
 import AjaxCart from "./AjaxCart";
-import SearchInput from "./searchInput";
 import { clearCredentials } from "../slices/user/clientAuthSlice";
 import { useLogoutMutation } from "../slices/user/usersApiSlice";
-import { calculateTotalQuantity, calculateTotalPrice } from "../slices/cart/clientCartSlice";
 import "../css/components/navigation.css";
-import { getFromLocalStorage } from "../utilities/localStorageUtils";
 import ShoppingBag from "./ShoppingBag";
+import { useGetCartQuery } from "../slices/cart/cartApiSlice";
 
 const Navigation = () => {
-      const { totalQuantity } = getFromLocalStorage("cart", 0); // get current quantity of items frrm local storage
+      // get current quantity of items frrm local storage
       const [userMenu, setUserMenu] = useState(false);
       const [showCart, setShowCart] = useState(false);
       const navigate = useNavigate();
       const dispatch = useDispatch();
 
       const [logoutApiRequest] = useLogoutMutation();
-      const { cartItems } = useSelector((state) => state.cart);
-      const { userInfo } = useSelector((state) => state.auth);
+      const { data } = useGetCartQuery();
+      const totalQuantity = data?.cart?.totalQuantity;
 
-      useEffect(() => {
-            dispatch(calculateTotalQuantity());
-            dispatch(calculateTotalPrice());
-      }, [cartItems, dispatch]);
+      const { userInfo } = useSelector((state) => state.auth);
 
       async function handleLogout() {
             try {
@@ -42,23 +37,25 @@ const Navigation = () => {
 
       return (
             <header className="wrapper">
-                  <div className="logo">Kazafi</div>
                   <nav className="desktop-nav">
-                        <SearchInput />
+                        <div className="logo">Kazafi</div>
                         <ul>
                               <li>
-                                    <Link to="/">Home</Link>
+                                    <Link className="link" to="/">
+                                          Home
+                                    </Link>
                               </li>
                               <li>
-                                    <Link to="/shop">Shop</Link>
+                                    <Link className="link" to="/shop">
+                                          Shop
+                                    </Link>
                               </li>
                               <li>FAQ</li>
-                              <li>Contact</li>
                         </ul>
                         <div className="icon-button-list">
                               <ShoppingBag totalQuantity={totalQuantity} setShowCart={setShowCart} />
                               {userInfo ? (
-                                    <Avatar username="F" onclick={() => setUserMenu(!userMenu)} />
+                                    <Avatar username={userInfo.user.name[0]} onclick={() => setUserMenu(!userMenu)} />
                               ) : (
                                     <Button className="login-btn" text="login" onclick={() => navigate("/login")} />
                               )}

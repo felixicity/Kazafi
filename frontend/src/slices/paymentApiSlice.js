@@ -1,6 +1,6 @@
 import { apiSlice } from "./apiSlice";
 
-const PAYMENT_URL = "localhost:5000/api/payment";
+const PAYMENT_URL = "http://localhost:5000/api/payments";
 
 const paymentApiSlice = apiSlice.injectEndpoints({
       endpoints: (builder) => ({
@@ -11,7 +11,13 @@ const paymentApiSlice = apiSlice.injectEndpoints({
                         body: data,
                   }),
             }),
+            verifyPayment: builder.query({
+                  query: (PARAM) => ({
+                        url: `${PAYMENT_URL}/verify/${PARAM}`,
+                        method: "GET",
+                  }),
+            }),
       }),
 });
 
-export const { useMakePaymentMutation } = paymentApiSlice;
+export const { useVerifyPaymentQuery, useMakePaymentMutation } = paymentApiSlice;

@@ -98,6 +98,33 @@
             }
       }
 
+      .order-items {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .item-img {
+                  width: 10rem;
+            }
+
+            .item-detail-column {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.4rem;
+
+                  .item-name,
+                  .item-price {
+                        font-weight: bold;
+                        font-size: 1.2rem;
+                        color: #272727;
+
+                        & + span {
+                              color: #323232;
+                        }
+                  }
+            }
+      }
+
       .shipping-info,
       .items,
       .payment-status {

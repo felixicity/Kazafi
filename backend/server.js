@@ -12,6 +12,7 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import paymentRoutes from "./routes/paymentRouter.js";
 import contactRoutes from "./routes/contactRouter.js";
+import webhookRoutes from "./routes/webHookRoutes.js";
 import connectDatabase from "./config/db.js";
 import cloudinary from "./config/cloudinary.js";
 
@@ -44,6 +45,7 @@ App.use("/api/:productId/reviews", reviewRoutes);
 App.use("/api/user/wishlist", wishlistRoutes);
 App.use("/api/orders", orderRoutes);
 App.use("/api/payments", paymentRoutes);
+App.use("/api/webhooks", webhookRoutes);
 App.use("/api/contact", contactRoutes);
 
 App.get("/", (req, res) => {

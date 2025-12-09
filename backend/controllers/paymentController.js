@@ -2,6 +2,7 @@ import Payment from "../models/paymentModel.js";
 import Order from "../models/orderModel.js";
 import axios from "axios";
 import dotenv from "dotenv";
+import User from "../models/userModel.js";
 
 dotenv.config();
 
@@ -13,10 +14,12 @@ export const initiatePayment = async (req, res) => {
       try {
             // Find the order
             const order = await Order.findById(orderId);
+            const user = await User.findById(userId);
             if (!order) return res.status(404).json({ message: "Order not found" });
 
             // Generate a unique payment reference
             const reference = `KAZAFI_${Date.now()}_${Math.floor(Math.random() * 30000000000)}`;
+            // console.log("REFERENCE :", reference);
 
             // Create payment record
             const payment = new Payment({
@@ -28,15 +31,17 @@ export const initiatePayment = async (req, res) => {
                   status: "pending",
             });
 
-            await payment.save();
+            const newPayment = await payment.save();
+
+            // console.log("New Payment: ", newPayment);
 
             let paymentUrl = "";
 
-            if (provider === "Paystack") {
+            if (provider.toLowerCase() === "paystack") {
                   const response = await axios.post(
                         "https://api.paystack.co/transaction/initialize",
                         {
-                              email: req.user.email,
+                              email: user.email,
                               amount: order.totalAmount * 100, // Paystack accepts kobo
                               reference,
                               currency: "NGN",
@@ -65,7 +70,7 @@ export const initiatePayment = async (req, res) => {
                   paymentUrl = response.data.data.link;
             }
 
-            res.status(200).json({ paymentUrl, reference });
+            res.status(200).json({ message: "Payment initiated", paymentUrl, reference });
       } catch (error) {
             console.error(error.response ? error.response.data : error.message);
             res.status(500).json({ message: "Payment initialization failed", error });
@@ -82,11 +87,11 @@ export const verifyPayment = async (req, res) => {
 
             let verificationResponse;
 
-            if (payment.provider === "Paystack") {
+            if (payment.provider === "paystack") {
                   verificationResponse = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, {
                         headers: { Authorization: `Bearer ${process.env.PAYSTACK_SECRET}` },
                   });
-            } else if (payment.provider === "Flutterwave") {
+            } else if (payment.provider === "flutterwave") {
                   verificationResponse = await axios.get(
                         `https://api.flutterwave.com/v3/transactions/${reference}/verify`,
                         { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}` } }
