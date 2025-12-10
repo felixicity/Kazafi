@@ -56,8 +56,6 @@ export const updateCartItem = async (req, res) => {
       const { quantity } = req.body;
       const userId = req.userId;
 
-      //   console.log({ itemId, quantity });
-
       try {
             const updatedCart = await Cart.findOneAndUpdate(
                   { user: userId, "items.variation._id": itemId },
@@ -127,6 +125,8 @@ export const removeFromCart = async (req, res) => {
 export const getCart = async (req, res) => {
       const userId = req.userId;
 
+      console.log("Getting cart for user:", userId);
+
       try {
             const cart = await Cart.findOne({ user: userId }).populate("items.product"); // Populate product details
             if (!cart) {
@@ -144,7 +144,7 @@ export const clearCart = async (req, res) => {
       const userId = req.user.id;
 
       try {
-            const user = await User.findById(userid);
+            const user = await User.findById(userId);
             user.cart = []; // Empty the cart
 
             await user.save();

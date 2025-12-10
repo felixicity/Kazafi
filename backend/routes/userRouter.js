@@ -14,25 +14,11 @@ import { protectMiddleware, adminMiddleware } from "../middleware/authMiddleware
 const router = express.Router();
 
 // Register route
-router.post(
-      "/register",
-      [
-            body("email").isEmail().withMessage("Invalid email address"),
-            body("password").isLength({ min: 6 }).withMessage("Password must be at least 6 characters long"),
-      ],
-      registerUser
-);
+router.post("/register", registerUser);
 router.get("/verify", verifyUser);
 
 // Login route
-router.post(
-      "/login",
-      [
-            body("email").isEmail().withMessage("Invalid email address"),
-            body("password").notEmpty().withMessage("Password is required"),
-      ],
-      loginUser
-);
+router.post("/login", loginUser);
 
 // Get user profile route (Requires authentication)
 router.get("/profile", protectMiddleware, getUserProfile);

@@ -37,7 +37,7 @@ export async function sendVerificationEmail(toEmail, verificationToken) {
                   <div style="font-family:sans-serif; text-align:center; padding: 20px;">
                         <h1 style="margin-bottom: 20px;">Hi there 👋</h1>
                         <p style="margin-bottom: 20px;">Thank you for registering! Please click the link below to verify your email address and activate your account:</p>
-                        <a href="http://localhost:5000/api/users/verify?token=${verificationToken}" target="_blank" style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">Verify Account</a>
+                        <a href="http://localhost:5000/api/users/verify?token=${verificationToken}" target="_blank" style="padding: 10px 20px; background-color:blue; color: white; text-decoration: none; border-radius: 5px;">Verify Account</a>
                         <p style="margin-bottom: 40px; color: gray;">This link will expire in 24 hours.</p>
                         <p style="margin-bottom: 10px;">If you did not request this, please ignore this email.</p>
                   </div>

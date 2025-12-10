@@ -55,7 +55,7 @@ const Navigation = () => {
                         <div className="icon-button-list">
                               <ShoppingBag totalQuantity={totalQuantity} setShowCart={setShowCart} />
                               {userInfo ? (
-                                    <Avatar username={userInfo.user.name[0]} onclick={() => setUserMenu(!userMenu)} />
+                                    <Avatar username={userInfo.user.email[0]} onclick={() => setUserMenu(!userMenu)} />
                               ) : (
                                     <Button className="login-btn" text="login" onclick={() => navigate("/login")} />
                               )}

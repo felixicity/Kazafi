@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/userModel.js";
 import { generateToken } from "../utils.js";
 import { sendVerificationEmail } from "../utils/sendMail.js";
+import dotenv from "dotenv";
 
 const generateVerificationToken = () => {
       const UUID = crypto.randomUUID(); // Generates a 64-character hex string
@@ -51,12 +52,6 @@ const registerUser = async (req, res) => {
             // --- NEW ACTION: Send Verification Email ---
             await sendVerificationEmail(user.email, verificationToken);
 
-            //generate a token for the user
-            // const token = generateToken(user);
-
-            // Save the token to the http-only Cookie
-            // res.cookie("authToken", token, { httpOnly: true, secure: true, sameSite: "strict" });
-
             //Post request sucessful  ✅
             res.status(201).json({
                   message: "Registration successful! Please check your email to verify your account.",
@@ -97,7 +92,12 @@ const verifyUser = async (req, res) => {
             // 3. Optional: Log the user in immediately after successful verification
             // You can generate and set the JWT cookie here if you want to auto-login.
             const authToken = generateToken(user);
-            res.cookie("authToken", authToken, { httpOnly: true, secure: true, sameSite: "strict" });
+            res.cookie("authToken", authToken, {
+                  httpOnly: true,
+                  secure: process.env.NODE_ENV === "production",
+                  sameSite: "strict",
+                  maxAge: 24 * 60 * 60 * 1000,
+            });
 
             // 4. Redirect the user to a success page
             // Use a redirect for a better user experience after a GET request:
@@ -128,19 +128,20 @@ const loginUser = async (req, res) => {
             }
 
             // Generate JWT
-            const token = generateToken(user);
+            const authToken = generateToken(user);
 
-            // Send the token as an HTTP-only cookie
-            res.cookie("authToken", token, {
+            const isProduction = process.env.NODE_ENV === "production";
+
+            //Send the token as an HTTP-only cookie
+            res.cookie("authToken", authToken, {
                   httpOnly: true,
-                  secure: process.env.NODE_ENV === "production", // ✅ Only send over HTTPS in production
-                  sameSite: "strict", // ✅ Prevent CSRF
-                  maxAge: 24 * 60 * 60 * 1000,
-            }); // Cookie expires in 1 day});
+                  secure: isProduction, // ✅ Only send over HTTPS in production
+                  sameSite: isProduction ? "strict" : "lax", // ✅ Prevent CSRF
+            }); // Cookie expires in 1 day;
 
             res.status(200).json({
                   message: "Logged in successfully",
-                  user: { id: user._id, name: user.name, email: user.email },
+                  user: { id: user._id, email: user.email },
             });
       } catch (error) {
             res.status(500).json({ message: "Server Error in logging in" });
