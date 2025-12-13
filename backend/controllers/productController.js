@@ -42,11 +42,112 @@ const createProduct = async (req, res) => {
 
 // Get all products
 const getProducts = async (req, res) => {
+      // 1. Extract Query Parameters
+      // Example request: /api/products?category=tshirt&color=000000&minPrice=10&sort=price_asc&page=1&limit=12&search=polo
+      const {
+            category, // string: 'tshirt,hoodie' (comma-separated list)
+            color, // string: '#000000,#FFFFFF' (comma-separated list of hex codes)
+            size, // string: 'S,M,L' (comma-separated list)
+            priceRange, // string: '50'
+            sort, // string: 'price_asc' | 'price_desc' | 'newest'
+            search, // string: 'blue shirt'
+            page = 1, // string: '1'
+            limit = 12, // string: '12' (default number of items per page)
+      } = req.query;
+
+      console.log("Query Parameters:", req.query);
+
+      // --- 1. INITIALIZE QUERY AND SORTING OBJECTS ---
+
+      // Initialize Mongoose query object and sorting options
+      let query = {};
+      let sortOptions = {};
+
+      // --- 2. BUILD THE SEARCH QUERY ---
+      if (search) {
+            const searchRegex = new RegExp(search, "i"); // 'i' for case-insensitive
+
+            // Search across multiple fields (name and description)
+            query.$or = [{ name: searchRegex }, { description: searchRegex }];
+            // Note: For large-scale production, consider using MongoDB's $text search index
+            // with $search operator for superior performance.
+      }
+
+      // --- 3. BUILD THE FILTER QUERIES ---
+
+      // A. Category Filter
+      if (category) {
+            const categoriesArray = category.split(",");
+            query.category = { $in: categoriesArray }; // Matches any product where category is in the array
+      }
+
+      // B. Color Filter (Filtering by variants.color property)
+      if (color) {
+            const colorsArray = color.split(",");
+            // This targets products that have *at least one* variant matching the requested color
+            query["variantion.color"] = { $in: colorsArray };
+      }
+
+      // C. Size Filter (Filtering by variants.sizes property)
+      if (size) {
+            const sizesArray = size.split(",");
+            // This targets products that have *at least one* variant matching the requested size
+            query["variations.sizes"] = { $in: sizesArray };
+      }
+
+      // D. Price Range Filter
+      const priceQuery = {};
+      if (priceRange) {
+            priceQuery.$gte = Number(priceRange.split(",")[0]);
+
+            priceQuery.$lte = Number(priceRange.split(",")[1]);
+      }
+      if (Object.keys(priceQuery).length > 0) {
+            query.price = priceQuery;
+      }
+
+      // --- 4. BUILD THE SORTING OPTIONS ---
+      switch (sort) {
+            case "price_asc":
+                  sortOptions.price = 1; // 1 for ascending
+                  break;
+            case "price_desc":
+                  sortOptions.price = -1; // -1 for descending
+                  break;
+            case "newest":
+            default:
+                  // Assuming your Product schema has a 'createdAt' timestamp
+                  sortOptions.createdAt = -1;
+                  break;
+      }
+
+      // --- 5. EXECUTE QUERY AND PAGINATION ---
       try {
-            const products = await Product.find();
-            res.status(200).json({ products });
+            const pageNumber = parseInt(page);
+            const limitNumber = parseInt(limit);
+            const skip = (pageNumber - 1) * limitNumber;
+
+            // Count total matching documents *before* applying skip/limit
+            const totalProducts = await Product.countDocuments(query);
+
+            const products = await Product.find(query).sort(sortOptions).skip(skip).limit(limitNumber); // Apply pagination limits
+
+            // Calculate total pages for the frontend
+            const totalPages = Math.ceil(totalProducts / limitNumber);
+
+            res.status(200).json({
+                  products,
+                  pagination: {
+                        totalProducts,
+                        totalPages,
+                        currentPage: pageNumber,
+                        limit: limitNumber,
+                        hasNextPage: pageNumber < totalPages,
+                  },
+            });
       } catch (error) {
-            res.status(500).json({ message: "Server error when getting all products" });
+            console.error("MongoDB Query Error:", error);
+            res.status(500).json({ message: "Server error during product retrieval.", error: error.message });
       }
 };
 
