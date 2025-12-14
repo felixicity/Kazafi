@@ -85,7 +85,7 @@ const getProducts = async (req, res) => {
       if (color) {
             const colorsArray = color.split(",");
             // This targets products that have *at least one* variant matching the requested color
-            query["variantion.color"] = { $in: colorsArray };
+            query["variations.color"] = { $in: colorsArray };
       }
 
       // C. Size Filter (Filtering by variants.sizes property)
@@ -95,16 +95,44 @@ const getProducts = async (req, res) => {
             query["variations.sizes"] = { $in: sizesArray };
       }
 
-      // D. Price Range Filter
-      const priceQuery = {};
-      if (priceRange) {
-            priceQuery.$gte = Number(priceRange.split(",")[0]);
+      // If you need a product where ONE variant meets all criteria:
 
-            priceQuery.$lte = Number(priceRange.split(",")[1]);
+      // Assuming size and color filters are also active
+      // Function scope where req.query is available
+      // Assuming priceRange = req.query.priceRange (e.g., "10,50")
+
+      const priceRangeString = req.query.priceRange; // Get the raw string, or undefined
+
+      let priceQuery = {};
+      let hasPriceFilter = false;
+
+      // 1. Check if the price range parameter exists
+      if (priceRangeString) {
+            // 2. Safely parse the MinPrice and MaxPrice from the comma-separated string
+            const [minPriceStr, maxPriceStr] = priceRangeString.split(",");
+
+            // Convert to numbers, defaulting to 0 or a very large number if parsing fails
+            const minPrice = Number(minPriceStr) || 0;
+            const maxPrice = Number(maxPriceStr) || Infinity;
+
+            // 3. Construct the Mongoose price range query
+            // This is applied to the individual price within the variation array
+            if (minPrice > 0 || maxPrice < Infinity) {
+                  priceQuery.$gte = minPrice;
+                  priceQuery.$lte = maxPrice;
+                  hasPriceFilter = true;
+            }
       }
-      if (Object.keys(priceQuery).length > 0) {
-            query.price = priceQuery;
+
+      // 4. Apply the price filter to the main query object using dot notation
+      if (hasPriceFilter) {
+            // Dot notation: 'variations.price' tells MongoDB to check if
+            // *ANY* element in the 'variations' array satisfies the 'price' condition.
+            query["variations.price"] = priceQuery;
       }
+
+      // Now the rest of your controller continues with the updated 'query' object...
+      // const products = await Product.find(query).sort(sortOptions).exec();
 
       // --- 4. BUILD THE SORTING OPTIONS ---
       switch (sort) {
@@ -131,6 +159,8 @@ const getProducts = async (req, res) => {
             const totalProducts = await Product.countDocuments(query);
 
             const products = await Product.find(query).sort(sortOptions).skip(skip).limit(limitNumber); // Apply pagination limits
+            // console.log("query:", query);
+            // console.log("Products:", products);
 
             // Calculate total pages for the frontend
             const totalPages = Math.ceil(totalProducts / limitNumber);
