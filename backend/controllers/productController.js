@@ -55,10 +55,6 @@ const getProducts = async (req, res) => {
             limit = 12, // string: '12' (default number of items per page)
       } = req.query;
 
-      console.log("Query Parameters:", req.query);
-
-      // --- 1. INITIALIZE QUERY AND SORTING OBJECTS ---
-
       // Initialize Mongoose query object and sorting options
       let query = {};
       let sortOptions = {};
@@ -183,16 +179,17 @@ const getProducts = async (req, res) => {
 
 // Get single product by ID
 const getProductById = async (req, res) => {
-      const { productid } = req.params;
+      const { productId } = req.params;
+      console.log("productId:", productId);
 
       try {
-            const product = await Product.findById(productid);
+            const product = await Product.findById(productId);
             if (!product) {
                   return res.status(404).json({ message: "Product not found" });
             }
             res.status(200).json({ product });
       } catch (error) {
-            res.status(500).json({ message: `Server error when getting a product with the id ${productid}` });
+            res.status(500).json({ message: `Server error when getting a product with the id ${productId}` });
       }
 };
 

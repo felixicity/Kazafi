@@ -25,18 +25,12 @@ router.post(
 router.get("/", getProducts);
 
 // Get a single product route
-router.get("/:productid", getProductById);
+router.get("/:productId", getProductById);
 
 // Update product route (with optional image upload)
-router.put(
-      "/:productid",
-      // upload.single("image")
-      protectMiddleware,
-      adminMiddleware,
-      updateProduct
-);
+router.put("/:productId", protectMiddleware, adminMiddleware, updateProduct);
 
 // Delete product route
-router.delete("/:productid", protectMiddleware, adminMiddleware, deleteProduct);
+router.delete("/:productId", protectMiddleware, adminMiddleware, deleteProduct);
 
 export default router;
