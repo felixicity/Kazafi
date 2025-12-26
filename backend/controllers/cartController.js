@@ -1,5 +1,4 @@
 import User from "../models/userModel.js"; // Import user model
-import Product from "../models/productModel.js"; // Import product model
 import Cart from "../models/cartModel.js";
 
 // Add item to the cart
