@@ -16,7 +16,7 @@ router.post("/", protectMiddleware, placeOrder); // Place an order
 router.get("/", protectMiddleware, getUserOrders); // Get logged-in user's orders
 
 // Admin routes
-router.get("/orders", protectMiddleware, getAllOrders); // Get all orders (admin only)
+router.get("/order", protectMiddleware, getAllOrders); // Get all orders (admin only)
 
 router.get("/:orderId", protectMiddleware, getOrderById); // Get order by ID
 router.delete("/:orderId", protectMiddleware, cancelOrder);

@@ -8,6 +8,7 @@ import {
       logoutUser,
       getAllUsers,
       verifyUser,
+      updateUserAddresses,
 } from "../controllers/userController.js";
 import { protectMiddleware, adminMiddleware } from "../middleware/authMiddleware.js";
 
@@ -27,6 +28,9 @@ router.get("/", protectMiddleware, adminMiddleware, getAllUsers);
 
 // Update user profile route (Requires authentication)
 router.put("/profile", protectMiddleware, updateUserProfile);
+
+//Update user adresses route (Requires authentication)
+router.patch("/addresses", protectMiddleware, updateUserAddresses);
 
 // Logout route (clear JWT cookie)
 router.post("/logout", logoutUser);

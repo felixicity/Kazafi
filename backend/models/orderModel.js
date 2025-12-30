@@ -1,15 +1,5 @@
 import mongoose from "mongoose";
 
-//  {
-//             id: "#KAZ-8476364",
-//             customer: "1294jjfn4fu823227e2",
-//             shipping: "processing", // processing, shipped, delivered
-//             date: "12/03/25",
-//             items: [{ name: "table" }],
-//             // shipping: 8 Romodome str, Alanta, USA
-//             payment: "pending", // pending , paid, refund
-//       },
-
 const OrderSchema = new mongoose.Schema(
       {
             customer: {
@@ -30,18 +20,16 @@ const OrderSchema = new mongoose.Schema(
             },
             paymentMethod: {
                   type: String,
-                  required: true,
             },
             paymentStatus: {
                   type: String,
                   enum: ["pending", "paid", "failed"],
                   default: "pending",
             },
-
-            orderStatus: {
+            status: {
                   type: String,
-                  enum: ["processing", "shipped", "delivered", "cancelled"],
-                  default: "processing",
+                  enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+                  default: "pending",
             },
             isPaid: {
                   type: Boolean,
@@ -57,17 +45,10 @@ const OrderSchema = new mongoose.Schema(
             deliveredAt: {
                   type: Date,
             },
+            collectionPoint: { type: String },
       },
       { timestamps: true } // Automatically adds createdAt and updatedAt fields
 );
 
 const Order = mongoose.model("Order", OrderSchema);
 export default Order;
-
-// shippingAddress: {
-//                   street: { type: String, required: true },
-//                   city: { type: String, required: true },
-//                   state: { type: String, required: true },
-//                   country: { type: String, default: "Nigeria" },
-//                   phone: { type: String, required: true },
-//             },

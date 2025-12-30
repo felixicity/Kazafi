@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const addressSchema = new mongoose.Schema({
+      street: { type: String },
+      city: { type: String },
+      country: { type: String },
+      phone: { type: String },
+      firstname: { type: String },
+      lastname: { type: String },
+      postCode: { type: String },
+      isDefault: { type: Boolean, default: false },
+});
+
 const userSchema = mongoose.Schema(
       {
             name: {
@@ -21,12 +32,7 @@ const userSchema = mongoose.Schema(
             phone: {
                   type: String,
             },
-            address: {
-                  street: { type: String },
-                  city: { type: String },
-                  state: { type: String },
-                  country: { type: String },
-            },
+            addresses: [addressSchema],
             isAdmin: {
                   type: Boolean,
                   default: false, // Regular users are not admins by default

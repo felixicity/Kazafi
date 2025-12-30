@@ -24,11 +24,10 @@ const paymentSchema = new mongoose.Schema(
                   enum: ["pending", "successful", "failed"],
                   default: "pending",
             },
-            paymentMethod: { type: String, default: "card" },
+
             provider: {
                   type: String,
                   enum: ["paystack", "flutterwave"],
-                  required: true,
             },
       },
       { timestamps: true }

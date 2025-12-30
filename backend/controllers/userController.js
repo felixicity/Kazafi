@@ -160,7 +160,7 @@ const getUserProfile = async (req, res) => {
                   res.status(404).json({ message: "User not found" });
             }
 
-            res.status(200).json({ user });
+            res.status(200).json(user);
       } catch (error) {
             // Handle the error properly by sending the response with a message
             res.status(500).json({ message: "Server error while getting user" });
@@ -198,6 +198,33 @@ const updateUserProfile = async (req, res) => {
       }
 };
 
+const updateUserAddresses = async (req, res) => {
+      const userId = req.userId; // Obtained from the authMiddleware
+      const addressData = req.body;
+
+      try {
+            // Find the user
+            const user = await User.findById(userId);
+            if (!user) {
+                  res.status(404).json({ message: "User not found" });
+            }
+
+            console.log([...user.addresses, addressData]);
+
+            // Update user addresses
+            user.addresses = [...user.addresses, addressData];
+
+            await user.save();
+
+            res.status(200).json({
+                  message: "Addresses updated successfully",
+                  addresses: user.addresses,
+            });
+      } catch (error) {
+            res.status(500).json({ message: "Server error in updating addresses" });
+      }
+};
+
 const getAllUsers = async (req, res) => {
       try {
             const users = await User.find();
@@ -220,4 +247,13 @@ const logoutUser = (req, res) => {
       }
 };
 
-export { registerUser, verifyUser, loginUser, getUserProfile, getAllUsers, updateUserProfile, logoutUser };
+export {
+      registerUser,
+      verifyUser,
+      loginUser,
+      getUserProfile,
+      getAllUsers,
+      updateUserProfile,
+      updateUserAddresses,
+      logoutUser,
+};

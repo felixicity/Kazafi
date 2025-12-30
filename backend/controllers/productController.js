@@ -91,11 +91,8 @@ const getProducts = async (req, res) => {
             query["variations.sizes"] = { $in: sizesArray };
       }
 
-      // If you need a product where ONE variant meets all criteria:
-
       // Assuming size and color filters are also active
       // Function scope where req.query is available
-      // Assuming priceRange = req.query.priceRange (e.g., "10,50")
 
       const priceRangeString = req.query.priceRange; // Get the raw string, or undefined
 
