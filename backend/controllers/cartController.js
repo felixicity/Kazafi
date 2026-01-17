@@ -12,14 +12,14 @@ export const addToCart = async (req, res) => {
             // Check if user already has a cart
             let cart = await Cart.findOne({ user: userId }); // Get user ID and product ID from authentication middleware
             const item = [{ product: productId, variation, quantity }];
-            // console.log("item :", item);
+            // console.log("Item to add:", item);
 
             if (!cart) {
                   // Create a new cart if none exists
                   cart = new Cart({
                         user: userId,
                         items: item,
-                        totalAmount: variation.price,
+                        totalAmount: variation.price * quantity,
                         totalQuantity: quantity,
                   });
             } else {
@@ -30,7 +30,7 @@ export const addToCart = async (req, res) => {
                   if (existingItemIndex > -1) {
                         cart.items[existingItemIndex].quantity += quantity;
                         cart.totalQuantity += quantity;
-                        cart.totalAmount += variation.price;
+                        cart.totalAmount += variation.price * quantity;
                   } else {
                         // Add new product to cart
                         cart.items.push({ product: productId, variation, quantity });

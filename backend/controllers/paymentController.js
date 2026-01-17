@@ -19,7 +19,6 @@ export const initiatePayment = async (req, res) => {
 
             // Generate a unique payment reference
             const reference = `KAZAFI_${Date.now()}_${Math.floor(Math.random() * 30000000000)}`;
-            // console.log("REFERENCE :", reference);
 
             // Create payment record
             const payment = new Payment({
@@ -38,6 +37,7 @@ export const initiatePayment = async (req, res) => {
             let paymentUrl = "";
 
             if (provider.toLowerCase() === "paystack") {
+                  // Inside your Payment initialization logic
                   const response = await axios.post(
                         "https://api.paystack.co/transaction/initialize",
                         {
@@ -45,6 +45,8 @@ export const initiatePayment = async (req, res) => {
                               amount: order.totalAmount * 100, // Paystack accepts kobo
                               reference,
                               currency: "NGN",
+                              callback_url: `http://localhost:3000/payment/verify`,
+                              metadata: { orderId: order._id },
                         },
                         {
                               headers: {
@@ -115,6 +117,17 @@ export const verifyPayment = async (req, res) => {
       }
 };
 
+export const getPaymentStatus = async (req, res) => {
+      const reference = req.params.reference;
+      console.log("reference: ", reference);
+
+      const payment = await Payment.findOne({ reference });
+      if (!payment) return res.status(404).json({ status: "not_found" });
+
+      // Return the status (which your webhook changes to "successful")
+      res.json({ status: payment.status });
+};
+
 // Get payment details
 export const getPaymentDetails = async (req, res) => {
       const { paymentId } = req.params;
@@ -126,5 +139,16 @@ export const getPaymentDetails = async (req, res) => {
             res.status(200).json(payment);
       } catch (error) {
             res.status(500).json({ message: "Failed to retrieve payment", error });
+      }
+};
+
+export const getAllPayments = async (req, res) => {
+      try {
+            const payments = await Payment.find().sort({ createdAt: -1 });
+
+            // console.log("All Payments: ", payments);
+            res.status(200).json(payments);
+      } catch (error) {
+            res.status(500).json({ message: "Failed to retrieve payments", error });
       }
 };

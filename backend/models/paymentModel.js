@@ -17,14 +17,16 @@ const paymentSchema = new mongoose.Schema(
                   required: true,
                   unique: true,
             },
+            type: { type: String },
+            customer_email: { type: String },
             amount: { type: Number, required: true },
             currency: { type: String, default: "NGN" },
+            channel: { type: String, default: "cash" },
             status: {
                   type: String,
                   enum: ["pending", "successful", "failed"],
                   default: "pending",
             },
-
             provider: {
                   type: String,
                   enum: ["paystack", "flutterwave"],

@@ -35,7 +35,7 @@ const Checkout = () => {
                         orderId: res.order._id,
                         provider: res.order.paymentMethod,
                   }).unwrap();
-                  console.log(payment);
+                  //   console.log(payment);
 
                   if (payment) {
                         dispatch(clearCart);

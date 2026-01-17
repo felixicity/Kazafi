@@ -1,11 +1,11 @@
 import express from "express";
-import { body } from "express-validator";
 import {
       createProduct,
       getProducts,
       getProductById,
       updateProduct,
       deleteProduct,
+      getAllProducts,
 } from "../controllers/productController.js";
 import { upload } from "../utils.js";
 import { protectMiddleware, adminMiddleware } from "../middleware/authMiddleware.js";
@@ -23,6 +23,7 @@ router.post(
 
 // Get all products route
 router.get("/", getProducts);
+router.get("/admin", getAllProducts);
 
 // Get a single product route
 router.get("/:productId", getProductById);

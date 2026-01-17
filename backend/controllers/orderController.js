@@ -3,7 +3,8 @@ import Cart from "../models/cartModel.js";
 
 export const placeOrder = async (req, res) => {
       const { address } = req.body;
-      console.log("address:", address);
+      //   console.log("address:", address);
+
       const userId = req.userId;
 
       try {
@@ -33,9 +34,6 @@ export const placeOrder = async (req, res) => {
 
             await order.save();
 
-            // Clear user's cart after placing order
-            await Cart.findOneAndDelete({ user: userId });
-
             res.status(201).json({ message: "Order placed successfully", order });
       } catch (error) {
             console.error(error);
@@ -45,7 +43,8 @@ export const placeOrder = async (req, res) => {
 
 export const getUserOrders = async (req, res) => {
       try {
-            const orders = await Order.find({ user: req.userId }).sort({ createdAt: -1 }); //sort in ascending order which means from latest Orders.
+            const orders = await Order.find({ customer: req.userId }).sort({ createdAt: -1 }); //sort in ascending order which means from latest Orders.
+            // console.log("orders:", orders);
             res.status(200).json(orders);
       } catch (error) {
             console.error(error);
@@ -68,6 +67,19 @@ export const getOrderById = async (req, res) => {
       }
 };
 
+// export const getRecentOrders = async (req, res) => {
+//       try {
+//             // get the most recent 5 orders for the logged-in user
+//             //sort it by at most a month ago
+//             const orders = await Order.find({ customer: req.userId }).sort({ createdAt: -1 }).limit(5);
+//             // console.log(orders);
+//             res.status(200).json(orders);
+//       } catch (error) {
+//             console.error(error);
+//             res.status(500).json({ message: "Server error fetching recent orders" });
+//       }
+// };
+
 export const cancelOrder = async (req, res) => {
       try {
             const orderId = req.params.orderId;
@@ -89,6 +101,7 @@ export const cancelOrder = async (req, res) => {
     to the folowing Routes
 */
 export const getAllOrders = async (req, res) => {
+      console.log("Admin want to get all Orders");
       try {
             const orders = await Order.find()
                   .populate({ path: "customer", model: "User", select: "name email" })
@@ -108,14 +121,19 @@ export const getAllOrders = async (req, res) => {
 
 export const updateOrderStatus = async (req, res) => {
       try {
-            const order = await Order.findById(req.params.id);
+            const { status } = req.body;
+            const order = await Order.findById(req.params.orderId);
 
             if (!order) {
                   return res.status(404).json({ message: "Order not found" });
             }
 
-            order.isDelivered = req.body.isDelivered;
-            order.deliveredAt = req.body.isDelivered ? Date.now() : null;
+            if (status === "delivered") {
+                  order.isDelivered = true;
+                  order.deliveredAt = Date.now();
+            }
+
+            order.status = status;
 
             await order.save();
             res.status(200).json({ message: "Order status updated", order });

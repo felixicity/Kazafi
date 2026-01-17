@@ -1,4 +1,3 @@
-import fs from "fs";
 import Product from "../models/productModel.js";
 import { parseVariations, parseImageVariations } from "../utils.js";
 
@@ -18,7 +17,6 @@ const createProduct = async (req, res) => {
 
       // Combine the parsed variations with the image URLs
       const productVariations = variations.map((variation, index) => ({
-            // _id: `${name}_variation_${index + 1}`,
             ...variation,
             imageURLs: imageFilesMap[index + 1] || [],
       }));
@@ -236,16 +234,28 @@ const deleteProduct = async (req, res) => {
             if (!product) {
                   return res.status(404).json({ message: "Product not found" });
             }
-
-            // Delete the product's image if exists
-            // if (product.images) {
-            //       fs.unlinkSync(...product.images);
-            // }
-
             res.status(200).json({ message: "Product deleted" });
       } catch (error) {
             res.status(500).json({ message: "Server error when deleting product" });
       }
 };
 
-export { createProduct, deleteProduct, getProductById, updateProduct, getProducts };
+const getAllProducts = async (req, res) => {
+      //Admin wants to get all their products
+      console.log("Admin wants to get all their products");
+      try {
+            const products = await Product.find();
+
+            if (products.length < 1) {
+                  console.log("No products found, returning 404");
+                  return res.status(404).json({ message: "Product not found" });
+            }
+
+            return res.status(200).json(products);
+      } catch (error) {
+            console.error("Error in getAllProducts:", error);
+            res.status(500).json({ message: "Server error when retrieving all products for admin" });
+      }
+};
+
+export { createProduct, deleteProduct, getProductById, updateProduct, getProducts, getAllProducts };

@@ -42,5 +42,7 @@ const CartSchema = new mongoose.Schema(
       { timestamps: true }
 );
 
+CartSchema.path("updatedAt").index({ expires: 2592000 });
+
 const Cart = mongoose.model("Cart", CartSchema);
 export default Cart;

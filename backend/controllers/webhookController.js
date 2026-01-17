@@ -2,6 +2,7 @@ import crypto from "crypto";
 import axios from "axios";
 import Payment from "../models/paymentModel.js";
 import Order from "../models/orderModel.js";
+import Cart from "../models/cartModel.js";
 
 export const handlePaystackWebhook = async (req, res) => {
       //verify the request
@@ -22,18 +23,40 @@ export const handlePaystackWebhook = async (req, res) => {
                               Authorization: `Bearer ${secret}`,
                         },
                   });
-                  const transactionStatus = response.data.data.status;
 
-                  const { order } = await Payment.findOne({ reference });
+                  const verifiedPayment = response.data?.data;
+
+                  const transactionStatus = verifiedPayment.status;
+                  const transactionCurrency = verifiedPayment.currency;
+                  const transactionChannel = verifiedPayment.channel;
+                  const customerEmail = verifiedPayment.customer.email;
+
+                  console.log("Transaction Status:", transactionChannel);
+
+                  const { order, user } = await Payment.findOne({ reference });
+
+                  //   console.log("The OrderId from Webhook: ", order);
 
                   if (transactionStatus === "success") {
                         //Fulfill the order
-                        const payment = await Payment.findOneAndUpdate({ reference }, { status: "successful" });
-                        await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "paid" });
+                        const payment = await Payment.findOneAndUpdate(
+                              { reference },
+                              {
+                                    status: "successful",
+                                    currency: transactionCurrency,
+                                    channel: transactionChannel,
+                                    customer_email: customerEmail,
+                                    type: "charge",
+                              }
+                        );
 
-                        if (payment) {
-                              console.log(`Payment ${payment._id} paid successfully.`);
-                        }
+                        await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "paid", status: "processing" });
+                        const userId = req.userId;
+
+                        // Clear user's cart after verifying payment
+                        await Cart.findOneAndDelete({ user });
+
+                        if (payment) console.log(`Payment ${payment._id} paid successfully.`);
                   }
 
                   if (transactionStatus === "processing") {
