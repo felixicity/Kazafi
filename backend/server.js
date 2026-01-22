@@ -58,10 +58,6 @@ App.use("/api/payments", paymentRoutes);
 App.use("/api/webhooks", webhookRoutes);
 App.use("/api/contact", contactRoutes);
 
-App.get("/", (req, res) => {
-      res.send("First Page");
-});
-
 App.use(notFound);
 App.use(errorHandler);
 

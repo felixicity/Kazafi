@@ -3,7 +3,7 @@ import Cart from "../models/cartModel.js";
 
 // Add item to the cart
 export const addToCart = async (req, res) => {
-      const { productId, variation, quantity } = req.body;
+      const { _id, variation, quantity } = req.body;
       //  variation is an array of product variations
 
       const userId = req.userId;
@@ -11,7 +11,7 @@ export const addToCart = async (req, res) => {
       try {
             // Check if user already has a cart
             let cart = await Cart.findOne({ user: userId }); // Get user ID and product ID from authentication middleware
-            const item = [{ product: productId, variation, quantity }];
+            const item = [{ product: _id, variation, quantity }];
             // console.log("Item to add:", item);
 
             if (!cart) {
@@ -33,7 +33,7 @@ export const addToCart = async (req, res) => {
                         cart.totalAmount += variation.price * quantity;
                   } else {
                         // Add new product to cart
-                        cart.items.push({ product: productId, variation, quantity });
+                        cart.items.push({ product: _id, variation, quantity });
                         cart.totalQuantity += quantity;
                         cart.totalAmount += variation.price;
                   }
@@ -59,7 +59,7 @@ export const updateCartItem = async (req, res) => {
             const updatedCart = await Cart.findOneAndUpdate(
                   { user: userId, "items.variation._id": itemId },
                   { $set: { "items.$.quantity": quantity } },
-                  { new: true } // Return the updated document
+                  { new: true }, // Return the updated document
             );
 
             let totalQuantity = 0;
@@ -77,7 +77,7 @@ export const updateCartItem = async (req, res) => {
             const cart = await Cart.findOneAndUpdate(
                   { _id: updatedCart._id },
                   { totalQuantity, totalAmount },
-                  { new: true }
+                  { new: true },
             );
 
             res.status(200).json({ message: "Cart item updated", cart: cart });

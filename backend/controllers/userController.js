@@ -199,20 +199,32 @@ const updateUserProfile = async (req, res) => {
 };
 
 const updateUserAddresses = async (req, res) => {
-      const userId = req.userId; // Obtained from the authMiddleware
+      const userId = req.userId;
       const addressData = req.body;
+      console.log(addressData);
 
       try {
-            // Find the user
             const user = await User.findById(userId);
+
+            // 1. FIX: Added 'return' to prevent execution after 404
             if (!user) {
-                  res.status(404).json({ message: "User not found" });
+                  return res.status(404).json({ message: "User not found" });
             }
 
-            console.log([...user.addresses, addressData]);
+            // 2. Logic: If it's the first address, make it default automatically
+            if (!user.addresses || user.addresses.length === 0) {
+                  addressData.isDefault = true;
+            }
+            // 3. Logic: If the new address is marked as default, unset others
+            else if (addressData.default === true) {
+                  user.addresses.forEach((addr) => {
+                        addr.isDefault = false;
+                  });
+            }
 
-            // Update user addresses
-            user.addresses = [...user.addresses, addressData];
+            // 4. FIX: Use Mongoose's .push() or re-assignment
+            // This ensures Mongoose tracks the change to the array
+            user.addresses.push(addressData);
 
             await user.save();
 
@@ -221,6 +233,7 @@ const updateUserAddresses = async (req, res) => {
                   addresses: user.addresses,
             });
       } catch (error) {
+            console.error(error); // Always log the actual error for debugging
             res.status(500).json({ message: "Server error in updating addresses" });
       }
 };
