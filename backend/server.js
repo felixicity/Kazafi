@@ -23,20 +23,35 @@ connectDatabase();
 const App = express();
 const port = process.env.PORT;
 
-const allowedOrigins = ["https://kazafi-commerce.vercel.app", "http:localhost:3000"]; // Add all origins your frontend might use
+const allowedOrigins = [
+      "https://kazafi-commerce.vercel.app",
+      "http://localhost:3000", // Fixed the slashes here
+];
 
 const corsOptions = {
       origin: (origin, callback) => {
-            // Allow requests with no origin (like mobile apps or curl)
-            if (!origin || allowedOrigins.includes(origin)) {
+            // 1. Allow internal/server-to-server requests
+            if (!origin) return callback(null, true);
+
+            // 2. Check if origin is in our whitelist
+            const isAllowed = allowedOrigins.includes(origin);
+
+            // 3. Optional: Allow Vercel Preview/Branch deployments
+            const isVercelPreview = origin.endsWith(".vercel.app");
+
+            if (isAllowed || isVercelPreview) {
                   callback(null, true);
             } else {
+                  console.error(`CORS Error: Origin ${origin} not allowed`);
                   callback(new Error("Not allowed by CORS"));
             }
       },
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
+      optionsSuccessStatus: 200, // Recommended for older browsers/mobile
 };
+
+// Apply to the app
 
 App.use(cors(corsOptions));
 
