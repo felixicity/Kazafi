@@ -2,9 +2,6 @@ import Order from "../models/orderModel.js";
 import Cart from "../models/cartModel.js";
 
 export const placeOrder = async (req, res) => {
-      const { address } = req.body;
-      console.log("address:", typeof address);
-
       const userId = req.userId;
 
       try {

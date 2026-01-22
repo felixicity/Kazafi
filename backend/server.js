@@ -23,7 +23,7 @@ connectDatabase();
 const App = express();
 const port = process.env.PORT;
 
-const allowedOrigins = ["http://localhost:3000", "http://127.0.0.1:3000"]; // Add all origins your frontend might use
+const allowedOrigins = ["https://kazafi-commerce.vercel.app", "http:localhost:3000"]; // Add all origins your frontend might use
 
 const corsOptions = {
       origin: (origin, callback) => {
@@ -34,6 +34,7 @@ const corsOptions = {
                   callback(new Error("Not allowed by CORS"));
             }
       },
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true,
 };
 
