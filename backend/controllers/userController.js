@@ -136,7 +136,7 @@ const loginUser = async (req, res) => {
             res.cookie("authToken", authToken, {
                   httpOnly: true,
                   secure: isProduction, // ✅ Only send over HTTPS in production
-                  sameSite: isProduction ? "strict" : "lax", // ✅ Prevent CSRF
+                  sameSite: isProduction ? "none" : "strict", // ✅ Prevent CSRF
             }); // Cookie expires in 1 day;
 
             res.status(200).json({
