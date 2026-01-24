@@ -4,14 +4,6 @@ import { addToCart, updateCartItem, removeFromCart, getCart, clearCart } from ".
 
 const router = express.Router();
 
-// router.use((req, res, next) => {
-//       console.log("Incoming Cart Request:");
-//       console.log("Method:", req.method);
-//       console.log("URL:", req.originalUrl);
-//       console.log("Headers:", req.headers);
-//       console.log("Body:", req.body);
-//       next(); // Pass control to the next middleware
-// });
 
 // Add item to the cart
 router.post("/add", protectMiddleware, addToCart);

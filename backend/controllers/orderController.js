@@ -3,6 +3,9 @@ import Cart from "../models/cartModel.js";
 
 export const placeOrder = async (req, res) => {
       const userId = req.userId;
+      const { address, shippingMethod } = req.body;
+
+      console.log("backend address: ", address, shippingMethod);
 
       try {
             // Get user's cart
@@ -16,6 +19,8 @@ export const placeOrder = async (req, res) => {
                   return res.status(400).json({ message: "Your cart is empty" });
             }
 
+            shippingFee = shippingMethod === delivery ? 1020 : 0;
+
             // Create new order
             const order = new Order({
                   customer: userId,
@@ -24,9 +29,11 @@ export const placeOrder = async (req, res) => {
                         product: item.variation,
                         quantity: item.quantity,
                   })),
-                  totalAmount: cart.totalAmount,
+                  totalAmount: cart.totalAmount + shippingFee,
                   totalQuantity: cart.totalQuantity,
-                  collectionPoint: address,
+                  shippingAddress: address,
+                  shippingMethod: shippingMethod,
+                  shippingFee: shippingFee,
             });
 
             await order.save();

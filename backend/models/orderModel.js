@@ -38,9 +38,11 @@ const OrderSchema = new mongoose.Schema(
             deliveredAt: {
                   type: Date,
             },
-            collectionPoint: { type: String },
+            shippingMethod: { type: String, enum: ["delivery", "pickup"], default: "pickup" },
+            shippingAddress: { type: String },
+            shippingFee: { type: Number, default: 0 },
       },
-      { timestamps: true } // Automatically adds createdAt and updatedAt fields
+      { timestamps: true }, // Automatically adds createdAt and updatedAt fields
 );
 
 const Order = mongoose.model("Order", OrderSchema);
