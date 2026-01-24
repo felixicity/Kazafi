@@ -45,7 +45,7 @@ export const initiatePayment = async (req, res) => {
                               amount: order.totalAmount * 100, // Paystack accepts kobo
                               reference,
                               currency: "NGN",
-                              callback_url: `http://localhost:3000/payment/verify`,
+                              callback_url: `https://kazafi-commerce.vercel.app/payment/verify`,
                               metadata: { orderId: order._id },
                         },
                         {
@@ -53,7 +53,7 @@ export const initiatePayment = async (req, res) => {
                                     Authorization: `Bearer ${process.env.PAYSTACK_SECRET_KEY}`,
                                     "Content-Type": "application/json",
                               },
-                        }
+                        },
                   );
 
                   paymentUrl = response.data.data.authorization_url;
@@ -67,7 +67,7 @@ export const initiatePayment = async (req, res) => {
                               redirect_url: `${process.env.FRONTEND_URL}/payment/verify`,
                               customer: { email: req.user.email },
                         },
-                        { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}` } }
+                        { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}` } },
                   );
                   paymentUrl = response.data.data.link;
             }
@@ -96,7 +96,7 @@ export const verifyPayment = async (req, res) => {
             } else if (payment.provider === "flutterwave") {
                   verificationResponse = await axios.get(
                         `https://api.flutterwave.com/v3/transactions/${reference}/verify`,
-                        { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}` } }
+                        { headers: { Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET}` } },
                   );
             }
 

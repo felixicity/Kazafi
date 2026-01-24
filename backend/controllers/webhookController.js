@@ -31,8 +31,6 @@ export const handlePaystackWebhook = async (req, res) => {
                   const transactionChannel = verifiedPayment.channel;
                   const customerEmail = verifiedPayment.customer.email;
 
-                  console.log("Transaction Status:", transactionChannel);
-
                   const { order, user } = await Payment.findOne({ reference });
 
                   //   console.log("The OrderId from Webhook: ", order);
@@ -47,7 +45,7 @@ export const handlePaystackWebhook = async (req, res) => {
                                     channel: transactionChannel,
                                     customer_email: customerEmail,
                                     type: "charge",
-                              }
+                              },
                         );
 
                         await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "paid", status: "processing" });
