@@ -19,7 +19,7 @@ export const placeOrder = async (req, res) => {
                   return res.status(400).json({ message: "Your cart is empty" });
             }
 
-            shippingFee = shippingMethod === delivery ? 1020 : 0;
+            const shippingFee = shippingMethod === delivery ? 1020 : 0;
 
             // Create new order
             const order = new Order({
