@@ -28,6 +28,7 @@ export const placeOrder = async (req, res) => {
                         productId: item.product,
                         product: item.variation,
                         quantity: item.quantity,
+                        isReviewed: false,
                   })),
                   totalAmount: cart.totalAmount + shippingFee,
                   totalQuantity: cart.totalQuantity,

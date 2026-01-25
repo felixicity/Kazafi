@@ -31,6 +31,8 @@ const VariationSchema = new mongoose.Schema({
             type: [String], // Array of image URLs
             required: [true, "At least one product image is required"],
       },
+      numberSold: Number,
+      reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
 });
 
 // For the materials from which a product was made
@@ -66,7 +68,7 @@ const ProductSchema = new mongoose.Schema(
                   default: false, // Determines if the product is shown as featured
             },
       },
-      { timestamps: true } // Automatically adds createdAt and updatedAt fields
+      { timestamps: true }, // Automatically adds createdAt and updatedAt fields
 );
 
 const Product = mongoose.model("Product", ProductSchema);

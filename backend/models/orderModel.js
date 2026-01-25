@@ -1,5 +1,12 @@
 import mongoose from "mongoose";
 
+const OrderItemsSchema = new mongoose.Schema({
+      productId: String,
+      product: Object,
+      quantity: Number,
+      isReviewed: { type: Boolean, default: false },
+});
+
 const OrderSchema = new mongoose.Schema(
       {
             customer: {
@@ -7,7 +14,7 @@ const OrderSchema = new mongoose.Schema(
                   ref: "User",
                   required: true,
             },
-            items: [Object],
+            items: [OrderItemsSchema],
             totalQuantity: {
                   type: Number,
                   required: true,

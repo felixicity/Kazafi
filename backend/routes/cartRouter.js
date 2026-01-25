@@ -4,7 +4,6 @@ import { addToCart, updateCartItem, removeFromCart, getCart, clearCart } from ".
 
 const router = express.Router();
 
-
 // Add item to the cart
 router.post("/add", protectMiddleware, addToCart);
 

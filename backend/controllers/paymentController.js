@@ -119,7 +119,6 @@ export const verifyPayment = async (req, res) => {
 
 export const getPaymentStatus = async (req, res) => {
       const reference = req.params.reference;
-      console.log("reference: ", reference);
 
       const payment = await Payment.findOne({ reference });
       if (!payment) return res.status(404).json({ status: "not_found" });

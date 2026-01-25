@@ -16,14 +16,14 @@ const router = express.Router();
 router.post(
       "/create",
       upload.any(), // Expect the image  be in the 'image' field in the request
-      //   protectMiddleware,
-      //   adminMiddleware,
-      createProduct
+      protectMiddleware,
+      adminMiddleware,
+      createProduct,
 );
 
 // Get all products route
 router.get("/", getProducts);
-router.get("/admin", getAllProducts);
+router.get("/admin", protectMiddleware, adminMiddleware, getAllProducts);
 
 // Get a single product route
 router.get("/:productId", getProductById);

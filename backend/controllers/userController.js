@@ -201,7 +201,6 @@ const updateUserProfile = async (req, res) => {
 const updateUserAddresses = async (req, res) => {
       const userId = req.userId;
       const addressData = req.body;
-      console.log(addressData);
 
       try {
             const user = await User.findById(userId);
@@ -216,7 +215,7 @@ const updateUserAddresses = async (req, res) => {
                   addressData.isDefault = true;
             }
             // 3. Logic: If the new address is marked as default, unset others
-            else if (addressData.default === true) {
+            else if (addressData.isDefault === true) {
                   user.addresses.forEach((addr) => {
                         addr.isDefault = false;
                   });

@@ -1,22 +1,39 @@
 import Product from "../models/productModel.js";
 import User from "../models/userModel.js";
 import Review from "../models/reviewModel.js"; // Review model
+import Order from "../models/orderModel.js";
 
 // Add a review to a product
 export const addReview = async (req, res) => {
-      const { rating, comment } = req.body;
+      const { rating, comment, orderId } = req.body;
       const productId = req.params.productId;
       const userId = req.userId; // Assuming user is authenticated
 
       try {
+            //    const user = await User.findById({userId})
             // Check if product exists
-            const product = await Product.findById(productId);
+            const order = Order.findById({ _id: orderId });
+            const product = await Product.findOne({ "variations._id": productId });
+
+            if (!order || order.status !== "delivered") {
+                  return res.status(404).json({ message: "You seem to have not purchased this product" });
+            }
+
+            console.log("order :", order);
+            console.log("product :", product);
+
             if (!product) {
                   return res.status(404).json({ message: "Product not found" });
             }
 
+            const order_product = await Order.findOne({ "items._id": productId });
+
+            order.isReviewed = true;
+            console.log(order_product);
+
             // Check if the user has already reviewed this product
             const existingReview = await Review.findOne({ product: productId, user: userId });
+
             if (existingReview) {
                   return res.status(400).json({ message: "You have already reviewed this product" });
             }
@@ -30,6 +47,7 @@ export const addReview = async (req, res) => {
             });
 
             await newReview.save();
+            await order.save();
 
             // Add the review reference to the product (optional)
             product.reviews.push(newReview._id);
@@ -45,7 +63,7 @@ export const addReview = async (req, res) => {
 export const updateReview = async (req, res) => {
       const { reviewId } = req.params;
       const { rating, comment } = req.body;
-      const userId = req.user.id;
+      const userId = req.userId;
 
       try {
             // Find the review by ID

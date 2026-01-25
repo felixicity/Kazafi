@@ -6,7 +6,7 @@ import {
       getPaymentStatus,
       getAllPayments,
 } from "../controllers/paymentController.js";
-import { protectMiddleware } from "../middleware/authMiddleware.js";
+import { adminMiddleware, protectMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.post("/initiate", protectMiddleware, initiatePayment);
 
 // Verify a payment
 router.get("/verify/:reference", protectMiddleware, verifyPayment);
-router.get("/admin/payments", protectMiddleware, getAllPayments);
+router.get("/admin", protectMiddleware, getAllPayments);
 
 router.get("/status/:reference", protectMiddleware, getPaymentStatus);
 
