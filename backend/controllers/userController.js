@@ -200,6 +200,7 @@ const updateUserProfile = async (req, res) => {
 
 const updateUserAddresses = async (req, res) => {
       const userId = req.userId;
+
       const addressData = req.body;
 
       try {
@@ -210,15 +211,14 @@ const updateUserAddresses = async (req, res) => {
                   return res.status(404).json({ message: "User not found" });
             }
 
-            // 2. Logic: If it's the first address, make it default automatically
-            if (!user.addresses || user.addresses.length === 0) {
-                  addressData.isDefault = true;
-            }
             // 3. Logic: If the new address is marked as default, unset others
-            else if (addressData.isDefault === true) {
+            if (addressData.isDefault) {
                   user.addresses.forEach((addr) => {
                         addr.isDefault = false;
                   });
+            } else if (!user.addresses || user.addresses.length === 0) {
+                  // 2. Logic: If it's the first address, make it default automatically
+                  addressData["isDefault"] = true;
             }
 
             // 4. FIX: Use Mongoose's .push() or re-assignment

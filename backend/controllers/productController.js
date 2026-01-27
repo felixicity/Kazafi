@@ -8,6 +8,8 @@ const createProduct = async (req, res) => {
       const variations = parseVariations(req.body);
       const imageFilesMap = await parseImageVariations(req.files);
 
+      console.log(name, description, category);
+
       const productData = {
             name,
             description,
@@ -25,10 +27,10 @@ const createProduct = async (req, res) => {
             productData.variations.push(...productVariations);
 
             // Create a new Product
-
             const newProduct = new Product(productData);
 
             const product = await newProduct.save();
+
             res.status(201).json({ message: "Product Created Successfully", product });
       } catch (error) {
             res.status(500).json({

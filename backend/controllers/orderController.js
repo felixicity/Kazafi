@@ -5,8 +5,6 @@ export const placeOrder = async (req, res) => {
       const userId = req.userId;
       const { address, shippingMethod } = req.body;
 
-      console.log("backend address: ", address, shippingMethod);
-
       try {
             // Get user's cart
             const cart = await Cart.findOne({ user: userId });
@@ -38,8 +36,6 @@ export const placeOrder = async (req, res) => {
             });
 
             await order.save();
-
-            console.log(order);
 
             res.status(201).json({ message: "Order placed successfully", order });
       } catch (error) {

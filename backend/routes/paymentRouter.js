@@ -15,7 +15,7 @@ router.post("/initiate", protectMiddleware, initiatePayment);
 
 // Verify a payment
 router.get("/verify/:reference", protectMiddleware, verifyPayment);
-router.get("/admin", protectMiddleware, getAllPayments);
+router.get("/admin", protectMiddleware, adminMiddleware, getAllPayments);
 
 router.get("/status/:reference", protectMiddleware, getPaymentStatus);
 

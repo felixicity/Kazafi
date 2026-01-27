@@ -52,13 +52,8 @@ const ProductSchema = new mongoose.Schema(
                   type: String,
                   required: [true, "Product description is required"],
             },
-            details: {
-                  type: String,
-                  required: [true, "Details about the product are required"],
-            },
             category: {
                   type: String,
-                  //   enum: ["chairs", "sofas", "tables", "wardrobes", "consoles"], // Add more categories if needed
                   required: [true, "Product category is required"],
             },
             variations: [VariationSchema], // Multiple color variants
@@ -66,6 +61,13 @@ const ProductSchema = new mongoose.Schema(
             isFeatured: {
                   type: Boolean,
                   default: false, // Determines if the product is shown as featured
+            },
+
+            status: {
+                  type: String,
+                  required: [true, "All products must have a status"],
+                  enum: ["draft", "active"],
+                  default: "draft",
             },
       },
       { timestamps: true }, // Automatically adds createdAt and updatedAt fields
