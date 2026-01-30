@@ -135,7 +135,7 @@ export const getProductReviews = async (req, res) => {
             }
 
             // Return all reviews for the product
-            res.status(200).json({ reviews: product.reviews });
+            res.status(200).json(product.reviews);
       } catch (error) {
             res.status(500).json({ message: "Server error", error });
       }

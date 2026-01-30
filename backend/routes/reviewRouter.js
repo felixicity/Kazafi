@@ -15,6 +15,6 @@ router.put("/:reviewid/update", protectMiddleware, updateReview);
 router.delete("/:reviewid/delete", protectMiddleware, deleteReview);
 
 // Get all reviews for a product
-router.get("/:productid", getProductReviews);
+router.get("/:productId", getProductReviews);
 
 export default router;
