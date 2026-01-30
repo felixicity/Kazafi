@@ -14,7 +14,7 @@ const router = express.Router();
 
 // User routes
 router.post("/", protectMiddleware, placeOrder); // Place an order
-router.get("/", protectMiddleware, getUserOrders); // Get logged-in user's orderss
+router.get("/", protectMiddleware, getUserOrders); // Get logged-in user's orders
 // router.get("/recent", protectMiddleware, getRecentOrders); // Get logged-in user's orderss
 router.get("/:orderId", protectMiddleware, getOrderById); // Get order by ID
 router.delete("/:orderId", protectMiddleware, cancelOrder);

@@ -76,6 +76,7 @@ App.use("/api/orders", orderRoutes);
 App.use("/api/payments", paymentRoutes);
 App.use("/api/webhooks", webhookRoutes);
 App.use("/api/contact", contactRoutes);
+App.use("/api/reviews", reviewRoutes);
 
 App.use(notFound);
 App.use(errorHandler);

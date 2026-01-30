@@ -4,6 +4,7 @@ const reviewSchema = new mongoose.Schema(
       {
             rating: { type: Number, required: true, min: 1, max: 5 }, // Rating out of 5
             comment: { type: String, required: true },
+            image: { type: String },
             user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
             product: { type: mongoose.Schema.Types.ObjectId, required: true },
       },

@@ -56,6 +56,8 @@ export const getUserOrders = async (req, res) => {
 };
 
 export const getOrderById = async (req, res) => {
+      console.log(req.params.orderId);
+
       try {
             const order = await Order.findById(req.params.orderId).populate("customer", "name email");
 

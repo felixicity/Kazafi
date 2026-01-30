@@ -72,6 +72,21 @@ const parseImageVariations = async (files) => {
       }
 };
 
+const ParseImage = async (file) => {
+      try {
+            const b64 = Buffer.from(file.buffer).toString("base64");
+
+            const dataURI = `data:${file.mimetype};base64,${b64}`;
+
+            const UploadURL = await cloudinary.uploader.upload(dataURI, { folder: "kazafi-product-reviews-photos" });
+
+            console.log("Image uploaded successfully");
+            return UploadURL.secure_url;
+      } catch (error) {
+            console.log(`Could not upload image: ${error}`);
+      }
+};
+
 /* 
     This Code Uses the JWT Package f
     or generating Tokens to users
@@ -84,4 +99,4 @@ const generateToken = (user) => {
       });
 };
 
-export { generateToken, upload, parseVariations, parseImageVariations };
+export { generateToken, upload, parseVariations, parseImageVariations, ParseImage };

@@ -1,52 +1,58 @@
-import Product from "../models/productModel.js";
 import User from "../models/userModel.js";
+import Product from "../models/productModel.js";
 import Review from "../models/reviewModel.js"; // Review model
 import Order from "../models/orderModel.js";
+import { ParseImage } from "../utils.js";
 
 // Add a review to a product
 export const addReview = async (req, res) => {
-      const { rating, comment, orderId } = req.body;
-      const productId = req.params.productId;
-      const userId = req.userId; // Assuming user is authenticated
+      const { rating, comment } = req.body;
+      const reviewImage = await ParseImage(req.file);
+      const { productId, orderId } = req.params;
+      const userId = req.userId;
 
       try {
-            //    const user = await User.findById({userId})
-            // Check if product exists
-            const order = Order.findById({ _id: orderId });
-            const product = await Product.findOne({ "variations._id": productId });
+            const order = await Order.findOne({
+                  _id: orderId,
+                  customer: req.userId, // Security: Ensure they own this order
+            });
 
-            if (!order || order.status !== "delivered") {
-                  return res.status(404).json({ message: "You seem to have not purchased this product" });
+            if (!order) {
+                  return res.status(404).json({ message: "Order not found." });
             }
 
-            console.log("order :", order);
-            console.log("product :", product);
+            if (order.status !== "delivered") {
+                  return res.status(400).json({ message: "You can only review delivered items." });
+            }
+
+            // Check if the specific product exists in this order
+            const productInOrder = order.items.find((item) => item.productId === productId);
+
+            if (!productInOrder) {
+                  return res.status(400).json({ message: "This product was not part of this order." });
+            }
+
+            if (productInOrder.isReviewed) {
+                  return res.status(400).json({ message: "You have already reviewed this product." });
+            }
+
+            const product = await Product.findById({ _id: productId });
 
             if (!product) {
                   return res.status(404).json({ message: "Product not found" });
             }
 
-            const order_product = await Order.findOne({ "items._id": productId });
-
-            order.isReviewed = true;
-            console.log(order_product);
-
-            // Check if the user has already reviewed this product
-            const existingReview = await Review.findOne({ product: productId, user: userId });
-
-            if (existingReview) {
-                  return res.status(400).json({ message: "You have already reviewed this product" });
-            }
-
             // Create a new review
-            const newReview = new Review({
+            const newReview = await Review.create({
                   rating,
                   comment,
+                  image: reviewImage,
                   product: productId,
                   user: userId,
             });
 
-            await newReview.save();
+            productInOrder.isReviewed = true;
+
             await order.save();
 
             // Add the review reference to the product (optional)

@@ -16,7 +16,6 @@ const router = express.Router();
 router.post(
       "/create",
       upload.any(), // Expect the image  be in the 'image' field in the request
-
       createProduct,
 );
 
