@@ -1,5 +1,6 @@
 import Order from "../models/orderModel.js";
 import Cart from "../models/cartModel.js";
+import { generateReceiptPDF } from "../utils/printReceipt.js";
 
 export const placeOrder = async (req, res) => {
       const userId = req.userId;
@@ -145,5 +146,25 @@ export const updateOrderStatus = async (req, res) => {
       } catch (error) {
             console.error(error);
             res.status(500).json({ message: "Server error updating order status" });
+      }
+};
+
+export const printOrderReceipt = async (req, res) => {
+      console.log("Getting ready to print receipt...");
+      try {
+            const order = await Order.findById(req.params.orderId);
+            if (!order) return res.status(404).send("Order not found");
+
+            const pdfBuffer = await generateReceiptPDF(order);
+
+            res.set({
+                  "Content-Type": "application/pdf",
+                  "Content-Disposition": `attachment; filename=kazafi-receipt-${order._id}.pdf`,
+                  "Content-Length": pdfBuffer.length,
+            });
+            console.log("receipt printed !!");
+            res.send(pdfBuffer);
+      } catch (error) {
+            res.status(500).send("Error generating PDF");
       }
 };

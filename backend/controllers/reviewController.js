@@ -1,4 +1,3 @@
-import User from "../models/userModel.js";
 import Product from "../models/productModel.js";
 import Review from "../models/reviewModel.js"; // Review model
 import Order from "../models/orderModel.js";
@@ -129,13 +128,14 @@ export const getProductReviews = async (req, res) => {
 
       try {
             // Get the product
-            const product = await Product.findById(productId).populate("reviews");
-            if (!product) {
+            const reviews = await Review.find({ product: productId }).populate("user");
+            if (!reviews) {
                   return res.status(404).json({ message: "Product not found" });
             }
 
             // Return all reviews for the product
-            res.status(200).json(product.reviews);
+
+            res.status(200).json(reviews);
       } catch (error) {
             res.status(500).json({ message: "Server error", error });
       }
