@@ -20,7 +20,7 @@ export const generateReceiptPDF = async (order) => {
           </div>
           <div class="text-right">
             <h2 class="text-2xl font-semibold uppercase">Receipt</h2>
-            <p class="text-sm text-gray-500">Order ID: #INV-{order._id.toString().slice(-6)}</p>
+            <p class="text-sm text-gray-500">Order ID:${order._id.toString().slice(-6)}</p>
             <p class="text-sm text-gray-500">Date: ${new Date(order.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
@@ -28,7 +28,7 @@ export const generateReceiptPDF = async (order) => {
         <div class="mt-10 mb-8">
           <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Bill To:</h3>
           <p class="font-bold text-lg">Shipping Address:${order.shippingAddress || "Customer"}</p>
-          <p class="text-gray-600">Payment: ${order.paymentMethod}</p>
+          <p class="text-gray-600">Payment: ${order.paymentStatus}</p>
         </div>
 
         <table class="w-full text-left border-collapse">
@@ -46,11 +46,11 @@ export const generateReceiptPDF = async (order) => {
                         (item) => `
               <tr class="border-b border-gray-50">
                 <td class="py-4">
-                  <p class="font-bold text-gray-700">${item.product.name || "Product"}</p>
+                  <p class="font-bold text-gray-700">${item.productId.name || "Product"}</p>
                 </td>
                 <td class="py-4 text-center">${item.quantity}</td>
-                <td class="py-4 text-right">$${item.product.price}</td>
-                <td class="py-4 text-right font-semibold">$${(item.quantity * item.product.price).toFixed(2)}</td>
+                <td class="py-4 text-right">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price)}</td>
+                <td class="py-4 text-right font-semibold">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.quantity * item.product.price)}</td>
               </tr>
             `,
                   )
@@ -62,11 +62,11 @@ export const generateReceiptPDF = async (order) => {
           <div class="w-64">
             <div class="flex justify-between py-2">
               <span class="text-gray-500">Shipping</span>
-              <span class="font-semibold">{new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN"}).format(order.shippingFee).toFixed(2)}</span>
+              <span class="font-semibold">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(order.shippingFee)}</span>
             </div>
             <div class="flex justify-between py-4 border-t-2 border-gray-100">
               <span class="text-xl font-bold text-gray-800">Total Paid</span>
-              <span class="text-xl font-bold text-blue-600">{new Intl.NumberFormat("en-NG",{style:"currency",currency:"NGN"}).format(order.totalAmount).toFixed(2)}</span>
+              <span class="text-xl font-bold text-blue-600">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(order.totalAmount)}</span>
             </div>
           </div>
         </div>

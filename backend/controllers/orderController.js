@@ -1,6 +1,7 @@
 import Order from "../models/orderModel.js";
 import Cart from "../models/cartModel.js";
 import { generateReceiptPDF } from "../utils/printReceipt.js";
+import { sendOrderStatus } from "../utils/sendMail.js";
 
 export const placeOrder = async (req, res) => {
       const userId = req.userId;
@@ -142,6 +143,7 @@ export const updateOrderStatus = async (req, res) => {
             order.status = status;
 
             await order.save();
+            sendOrderStatus(order);
             res.status(200).json({ message: "Order status updated", order });
       } catch (error) {
             console.error(error);
@@ -152,18 +154,23 @@ export const updateOrderStatus = async (req, res) => {
 export const printOrderReceipt = async (req, res) => {
       console.log("Getting ready to print receipt...");
       try {
-            const order = await Order.findById(req.params.orderId);
+            const order = await Order.findById(req.params.orderId).populate({
+                  path: "items.productId",
+                  model: "Product",
+                  select: "name",
+            });
+
             if (!order) return res.status(404).send("Order not found");
 
             const pdfBuffer = await generateReceiptPDF(order);
 
+            console.log("receipt printed !!");
+
             res.set({
                   "Content-Type": "application/pdf",
                   "Content-Disposition": `attachment; filename=kazafi-receipt-${order._id}.pdf`,
-                  "Content-Length": pdfBuffer.length,
             });
-            console.log("receipt printed !!");
-            res.send(pdfBuffer);
+            return res.status(200).send(Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer));
       } catch (error) {
             res.status(500).send("Error generating PDF");
       }

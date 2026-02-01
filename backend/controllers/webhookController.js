@@ -75,7 +75,7 @@ export const handlePaystackWebhook = async (req, res) => {
                   } else if (transactionStatus === "failed") {
                         //Fulfill the order
                         const payment = await Payment.findOneAndUpdate({ reference }, { status: "failed" });
-                        await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "failed" });
+                        await Order.findByIdAndDelete({ _id: order });
                         if (payment) {
                               console.log(`Payment ${payment._id} failed.`);
                         }
@@ -84,6 +84,10 @@ export const handlePaystackWebhook = async (req, res) => {
                   console.error("Webhook verification failed: ", error);
                   res.status(500).json({ message: "Payment verification failed" });
             }
+      } else {
+            const { order } = await Payment.findOne({ reference });
+            console.log(order);
+            await Order.findByIdAndDelete({ _id: order });
       }
       res.status(200).json({ message: "Webhook recieved successfully" });
 };

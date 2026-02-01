@@ -55,3 +55,26 @@ export async function sendVerificationEmail(toEmail, verificationToken) {
             console.error("Error sending email:", error);
       }
 }
+
+export async function sendOrderStatus(order) {
+      try {
+            let info = await transporter.sendMail({
+                  from: "Kazafi <customer-service@kazafi.com>", // MUST be a domain you've verified with Resend
+                  to: [toEmail],
+                  subject: "Order Update",
+                  html: `
+                  <div style="font-family:sans-serif; text-align:center; padding: 20px;">
+                        <h1 style="margin-bottom: 20px;">Hi there 👋</h1>
+                        <p style="margin-bottom: 20px;">Your order PO-${order._id} ${order.status !== "delivered" ? "is" : "has been"} ${order.status}</p>
+                        
+                        <p style="margin-bottom: 10px;">For any further question, all our customer service @ 040900005998e00</p>
+                  </div>
+            `,
+            });
+            console.log("Message sent: %s", info.messageId);
+            // Preview URL only available with Ethereal/Test accounts
+            // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+      } catch (error) {
+            console.error("Error sending email:", error);
+      }
+}
