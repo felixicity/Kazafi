@@ -169,8 +169,12 @@ export const printOrderReceipt = async (req, res) => {
             res.set({
                   "Content-Type": "application/pdf",
                   "Content-Disposition": `attachment; filename=kazafi-receipt-${order._id}.pdf`,
+                  "Content-Length": pdfBuffer.length,
+                  "Cache-Control": "no-store",
             });
-            return res.status(200).send(Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer));
+
+            res.end(pdfBuffer);
+            // return res.status(200).send(Buffer.isBuffer(pdfBuffer) ? pdfBuffer : Buffer.from(pdfBuffer));
       } catch (error) {
             res.status(500).send("Error generating PDF");
       }
