@@ -30,7 +30,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // 3. Send the email
 export async function sendVerificationEmail(toEmail, verificationToken) {
       const { data, error } = await resend.emails.send({
-            from: "Kazafi <onboarding@kazafi.com>",
+            from: "Kazafi <onboarding@resend.dev>",
             to: [toEmail],
             subject: "Verify Your Email Address",
             html: `
