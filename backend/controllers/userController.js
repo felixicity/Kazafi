@@ -42,8 +42,8 @@ const registerUser = async (req, res) => {
                   email,
                   password: hashedPassword,
                   isVerified: false, // <-- Crucial: Default to false
-                  verificationToken: verificationToken, // <-- Save the token
-                  tokenExpires: tokenExpires, // <-- Save the expiration time
+                  verificationToken, // <-- Save the token
+                  tokenExpires, // <-- Save the expiration time
             });
 
             // Save the newUser to the database
