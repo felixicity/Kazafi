@@ -101,7 +101,7 @@ const verifyUser = async (req, res) => {
 
             // 4. Redirect the user to a success page
             // Use a redirect for a better user experience after a GET request:
-            return res.redirect("http://localhost:3000/verify/verification-success"); // Redirect to a success page on your frontend
+            return res.redirect("https://kazafi-commerce.vercel.app/verify/verification-success"); // Redirect to a success page on your frontend
       } catch (error) {
             console.error(error);
             res.status(500).send("Verification failed due to a server error.");
