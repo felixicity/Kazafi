@@ -1,4 +1,5 @@
 import Order from "../models/orderModel.js";
+import Payment from "../models/paymentModel.js";
 import Cart from "../models/cartModel.js";
 import { generateReceiptPDF } from "../utils/printReceipt.js";
 import { sendOrderStatus } from "../utils/sendMail.js";
@@ -129,7 +130,11 @@ export const getAllOrders = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
       try {
             const { status } = req.body;
-            const order = await Order.findById(req.params.orderId);
+            const order = await Order.findById(req.params.orderId).populate({
+                  path: "customer",
+                  model: "User",
+                  select: "email",
+            });
 
             if (!order) {
                   return res.status(404).json({ message: "Order not found" });
@@ -160,9 +165,11 @@ export const printOrderReceipt = async (req, res) => {
                   select: "name",
             });
 
+            const payment = await Payment.findOne({ order: req.params.orderId }).select("channel");
+
             if (!order) return res.status(404).send("Order not found");
 
-            const pdfBuffer = await generateReceiptPDF(order);
+            const pdfBuffer = await generateReceiptPDF(order, payment);
 
             console.log("receipt printed !!");
 

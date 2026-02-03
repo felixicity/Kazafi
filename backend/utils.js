@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
+import axios from "axios";
 
 /* 
    This Code Uses the Multer Package to
@@ -99,4 +100,18 @@ const generateToken = (user) => {
       });
 };
 
-export { generateToken, upload, parseVariations, parseImageVariations, ParseImage };
+// This helper function adds images to receipts
+
+async function addImageFromUrl(doc, url, x, y, size) {
+      try {
+            const response = await axios.get(url, { responseType: "arraybuffer" });
+            const buffer = Buffer.from(response.data);
+            doc.image(buffer, x, y, { fit: [size, size] });
+      } catch (error) {
+            console.error("Image load failed:", error);
+            // Draw a placeholder or just leave it blank
+            doc.rect(x, y, size, size).stroke();
+      }
+}
+
+export { generateToken, upload, parseVariations, parseImageVariations, ParseImage, addImageFromUrl };

@@ -1,6 +1,7 @@
 import PDFDocument from "pdfkit";
+import axios from "axios";
 
-const drawTable = ({ doc, startX, startY, rowHeight, columnWidths, headers, rows }) => {
+const drawTable = async ({ doc, startX, startY, rowHeight, imgSize, columnWidths, headers, rows }) => {
       let y = startY;
       const tableWidth = columnWidths.reduce((a, b) => a + b, 0);
 
@@ -9,10 +10,9 @@ const drawTable = ({ doc, startX, startY, rowHeight, columnWidths, headers, rows
 
       headers.forEach((header, i) => {
             const x = startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0);
-
             doc.text(header, x + 6, y + 7, {
                   width: columnWidths[i] - 12,
-                  align: "left",
+                  align: i === 0 ? "left" : "right", // Align header same as content
             });
       });
 
@@ -28,57 +28,99 @@ const drawTable = ({ doc, startX, startY, rowHeight, columnWidths, headers, rows
       // Rows
       doc.font("fonts/Roboto-VariableFont_wdth,wght.ttf").fontSize(10).fillColor("#111827");
 
-      rows.forEach((row) => {
+      // Use for...of for ASYNC support
+      for (const row of rows) {
             // Page break check
             if (y + rowHeight > doc.page.height - doc.page.margins.bottom) {
                   doc.addPage();
                   y = doc.page.margins.top;
             }
 
-            row.forEach((cell, i) => {
+            // Iterate through columns
+            for (let i = 0; i < row.length; i++) {
+                  const cell = row[i];
                   const x = startX + columnWidths.slice(0, i).reduce((a, b) => a + b, 0);
 
-                  doc.text(String(cell), x + 6, y + 7, {
-                        width: columnWidths[i] - 12,
-                        align: i === 1 ? "center" : "left",
-                  });
-            });
+                  if (i === 0 && typeof cell === "object") {
+                        // COLUMN 1: IMAGE + TEXT
+                        if (cell.image) {
+                              try {
+                                    const response = await axios.get(cell.image, { responseType: "arraybuffer" });
+                                    doc.image(Buffer.from(response.data), x + 6, y + 5, { fit: [imgSize, imgSize] });
+                              } catch (e) {
+                                    console.error("Image load failed", e);
+                              }
+                        }
+
+                        // Offset text so it doesn't overlap image
+                        const textX = cell.image ? x + imgSize + 12 : x + 6;
+                        doc.text(cell.text, textX, y + 15, {
+                              width: columnWidths[i] - (cell.image ? imgSize + 18 : 12),
+                              align: "left",
+                        });
+                  } else {
+                        // OTHER COLUMNS: REGULAR TEXT
+                        doc.text(String(cell), x + 6, y + 15, {
+                              width: columnWidths[i] - 12,
+                              align: i === 1 ? "center" : "right",
+                        });
+                  }
+            }
 
             y += rowHeight;
 
             // Row separator
             doc.strokeColor("#f3f4f6")
+                  .lineWidth(1)
                   .moveTo(startX, y)
                   .lineTo(startX + tableWidth, y)
                   .stroke();
-      });
+      }
 
       return y;
 };
 
-export const generateReceiptPDF = async (order) => {
-      return new Promise((resolve, reject) => {
+export const generateReceiptPDF = async (order, payment) => {
+      // 1. Add 'async' here --------------------v
+      return new Promise(async (resolve, reject) => {
             try {
                   const doc = new PDFDocument({ size: "A4", margin: 40 });
                   const buffers = [];
 
-                  doc.on("data", buffers.push.bind(buffers));
+                  doc.on("data", (chunk) => buffers.push(chunk));
                   doc.on("end", () => resolve(Buffer.concat(buffers)));
+                  doc.on("error", (err) => reject(err));
 
                   // Header
-                  doc.fontSize(24).fillColor("#2563eb").text("KAZAFI");
+                  const startY = doc.y; // Save the "top" of your flex container
+                  const midPoint = 300; // Where the second column starts
+
+                  // Left Item
+                  doc.fontSize(24).fillColor("#121212").text("KAZAFI", 40, startY, {
+                        width: 250,
+                        align: "left",
+                  });
                   doc.fontSize(10).fillColor("#6b7280").text("17 Ikorodu Road, Lagos");
 
-                  doc.fontSize(16).fillColor("#000").text("RECEIPT", { align: "right" });
+                  // Right Item
+                  // We manually set the x to midPoint and y back to startY
+                  doc.fontSize(16).fillColor("#121212").text("RECEIPT", midPoint, startY, {
+                        width: 250,
+                        align: "right",
+                  });
                   doc.fontSize(12)
                         .fillColor("#1b1b1b")
-                        .text(`Order ID: #PO-${order._id.toString()}`, { align: "right" });
+                        .text(`Order ID: PO-${order._id.toString()}`, { align: "right" });
                   doc.fillColor("#1b1b1b").text(`Date: ${new Date(order.createdAt).toLocaleDateString()}`, {
                         align: "right",
                   });
 
-                  doc.moveDown();
+                  // IMPORTANT: Move doc.y to the bottom of the tallest element
+                  // so the next line of text doesn't overlap
+                  doc.y = Math.max(doc.y, startY + 20);
+                  doc.x = 40;
 
+                  doc.moveDown(2);
                   doc.font("fonts/Roboto-VariableFont_wdth,wght.ttf").fontSize(8).fillColor("#6b7280").text("BILL TO:");
 
                   doc.font("fonts/Roboto-VariableFont_wdth,wght.ttf").fontSize(12).fillColor("#000");
@@ -88,24 +130,29 @@ export const generateReceiptPDF = async (order) => {
                               : order.shippingAddress?.address || "Customer";
 
                   doc.text(`Shipping Address: ${address}`);
-                  doc.text(`Payment: ${order.status}`);
+                  doc.text(`Payment: ${payment.channel}`);
 
                   doc.moveDown(2);
 
                   // Table
-                  const tableEndY = drawTable({
+                  // Map your data so the first column is an object
+                  const tableRows = order.items.map((item) => [
+                        { text: item.productId.name, image: item.product.imageURLs[0] }, // Object for first column
+                        item.quantity,
+                        `${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price)}`,
+                        `${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price * item.quantity)}`,
+                  ]);
+
+                  // Call it with await
+                  const tableEndY = await drawTable({
                         doc,
                         startX: 40,
                         startY: doc.y,
-                        rowHeight: 25,
-                        columnWidths: [240, 80, 120, 120],
+                        rowHeight: 45, // Increased slightly for image padding
+                        imgSize: 30,
+                        columnWidths: [180, 80, 120, 120],
                         headers: ["Item", "Qty", "Price", "Total"],
-                        rows: order.items.map((item) => [
-                              item.productId.name,
-                              item.quantity,
-                              `${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price)}`,
-                              `${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price * item.quantity)}`,
-                        ]),
+                        rows: tableRows,
                   });
 
                   // Totals
@@ -135,7 +182,7 @@ export const generateReceiptPDF = async (order) => {
                         .stroke();
                   doc.moveDown();
                   doc.fontSize(20)
-                        .fillColor("#2563eb")
+                        .fillColor("#121212")
                         .text(
                               `Grand Total: ${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(order.totalAmount)}`,
                               { align: "right", width: fullWidth },
@@ -161,94 +208,3 @@ export const generateReceiptPDF = async (order) => {
             }
       });
 };
-
-// import puppeteer from "puppeteer";
-
-// export const generateReceiptPDF = async (order) => {
-//       const browser = await puppeteer.launch({
-//             args: ["--no-sandbox", "--disable-setuid-sandbox"],
-//             headless: "new",
-//       });
-//       const page = await browser.newPage();
-
-//       // The Tailwind Template
-//       const htmlContent = `
-//   <!DOCTYPE html>
-//   <html>
-//     <head>
-//       <script src="https://cdn.tailwindcss.com"></script>
-//     </head>
-//     <body>
-//       <div class="p-10 bg-white font-sans text-gray-800">
-//         <div class="flex justify-between items-center border-b-2 border-gray-100 pb-8">
-//           <div>
-//             <h1 class="text-4xl font-bold text-blue-600">KAZAFI</h1>
-//             <p class="text-sm text-gray-500">17 Ikorodu Road, Lagos</p>
-//           </div>
-//           <div class="text-right">
-//             <h2 class="text-2xl font-semibold uppercase">Receipt</h2>
-//             <p class="text-sm text-gray-500">Order ID:${order._id.toString().slice(-6)}</p>
-//             <p class="text-sm text-gray-500">Date: ${new Date(order.createdAt).toLocaleDateString()}</p>
-//           </div>
-//         </div>
-
-//         <div class="mt-10 mb-8">
-//           <h3 class="text-xs uppercase tracking-widest text-gray-400 font-bold mb-2">Bill To:</h3>
-//           <p class="font-bold text-lg">Shipping Address:${order.shippingAddress || "Customer"}</p>
-//           <p class="text-gray-600">Payment: ${order.paymentStatus}</p>
-//         </div>
-
-//         <table class="w-full text-left border-collapse">
-//           <thead>
-//             <tr class="border-b-2 border-gray-100">
-//               <th class="py-4 font-bold uppercase text-sm text-gray-400">Item</th>
-//               <th class="py-4 font-bold uppercase text-sm text-gray-400 text-center">Qty</th>
-//               <th class="py-4 font-bold uppercase text-sm text-gray-400 text-right">Price</th>
-//               <th class="py-4 font-bold uppercase text-sm text-gray-400 text-right">Total</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             ${order.items
-//                   .map(
-//                         (item) => `
-//               <tr class="border-b border-gray-50">
-//                 <td class="py-4">
-//                   <p class="font-bold text-gray-700">${item.productId.name || "Product"}</p>
-//                 </td>
-//                 <td class="py-4 text-center">${item.quantity}</td>
-//                 <td class="py-4 text-right">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.product.price)}</td>
-//                 <td class="py-4 text-right font-semibold">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(item.quantity * item.product.price)}</td>
-//               </tr>
-//             `,
-//                   )
-//                   .join("")}
-//           </tbody>
-//         </table>
-
-//         <div class="mt-10 flex justify-end">
-//           <div class="w-64">
-//             <div class="flex justify-between py-2">
-//               <span class="text-gray-500">Shipping</span>
-//               <span class="font-semibold">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(order.shippingFee)}</span>
-//             </div>
-//             <div class="flex justify-between py-4 border-t-2 border-gray-100">
-//               <span class="text-xl font-bold text-gray-800">Total Paid</span>
-//               <span class="text-xl font-bold text-blue-600">${new Intl.NumberFormat("en-NG", { style: "currency", currency: "NGN" }).format(order.totalAmount)}</span>
-//             </div>
-//           </div>
-//         </div>
-
-//         <div class="mt-20 text-center border-t border-gray-100 pt-8">
-//           <p class="text-gray-400 text-sm italic">Thank you for shopping with us! If you have any questions, contact support@kazafi.com</p>
-//         </div>
-//       </div>
-//     </body>
-//   </html>
-//   `;
-
-//       await page.setContent(htmlContent, { waitUntil: "domcontentloaded" });
-//       const pdfBuffer = await page.pdf({ format: "A4", printBackground: true });
-
-//       await browser.close();
-//       return pdfBuffer;
-// };
