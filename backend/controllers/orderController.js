@@ -59,7 +59,7 @@ export const getUserOrders = async (req, res) => {
 };
 
 export const getOrderById = async (req, res) => {
-      console.log(req.params.orderId);
+     
 
       try {
             const order = await Order.findById(req.params.orderId).populate("customer", "name email");
@@ -75,18 +75,6 @@ export const getOrderById = async (req, res) => {
       }
 };
 
-// export const getRecentOrders = async (req, res) => {
-//       try {
-//             // get the most recent 5 orders for the logged-in user
-//             //sort it by at most a month ago
-//             const orders = await Order.find({ customer: req.userId }).sort({ createdAt: -1 }).limit(5);
-//             // console.log(orders);
-//             res.status(200).json(orders);
-//       } catch (error) {
-//             console.error(error);
-//             res.status(500).json({ message: "Server error fetching recent orders" });
-//       }
-// };
 
 export const cancelOrder = async (req, res) => {
       try {
@@ -112,7 +100,7 @@ export const getAllOrders = async (req, res) => {
       console.log("Admin want to get all Orders");
       try {
             const orders = await Order.find()
-                  .populate({ path: "customer", model: "User", select: "name email" })
+                  .populate({ path: "customer", model: "User", select: "email" })
                   .populate({
                         path: "items.productId",
                         model: "Product",
