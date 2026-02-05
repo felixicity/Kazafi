@@ -49,7 +49,7 @@ export const handlePaystackWebhook = async (req, res) => {
                         );
 
                         await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "paid", status: "processing" });
-                        const userId = req.userId;
+                        const user = req.userId;
 
                         // Clear user's cart after verifying payment
                         await Cart.findOneAndDelete({ user });
