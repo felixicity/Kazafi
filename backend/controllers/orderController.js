@@ -20,32 +20,41 @@ export const placeOrder = async (req, res) => {
                   return res.status(400).json({ message: "Your cart is empty" });
             }
 
-            const shippingFee = shippingMethod === "delivery" ? 1020 : 0;
+            const shippingFee = shippingMethod === "delivery" ? 5000 : 0;
 
-            // Create new order
-            const order = new Order({
-                  customer: userId,
-                  items: cart.items.map((item) => ({
-                        productId: item.product,
-                        product: item.variation,
-                        quantity: item.quantity,
-                        isReviewed: false,
-                  })),
-                  totalAmount: cart.totalAmount + shippingFee,
-                  totalQuantity: cart.totalQuantity,
-                  shippingAddress: address,
-                  shippingMethod: shippingMethod,
-                  shippingFee: shippingFee,
-            });
-
-            await order.save();
-
-            res.status(201).json({ message: "Order placed successfully", order });
+            const order = await Order.findOneAndUpdate({ 
+                        customer: userId, 
+                        paymentStatus: { $in: ['pending', 'failed'] } 
+                        },
+                        { $set: { 
+                                    items: cart.items.map((item) => ({
+                                            productId: item.product,
+                                            product: item.variation,
+                                            quantity: item.quantity,
+                                            isReviewed: false,
+                                    })),
+                                    totalAmount: cart.totalAmount + shippingFee,
+                                    totalQuantity: cart.totalQuantity,
+                                    shippingAddress: address,
+                                    shippingMethod: shippingMethod,
+                                    shippingFee: shippingFee,
+                                     updatedAt: new Date() // This resets the abandonment timer
+                        } 
+                        },
+                        { 
+                        new: true,      // Return the updated document
+                        upsert: true,   // Create it if it doesn't exist!
+                        setDefaultsOnInsert: true 
+                        }
+                    );
+            // console.log({ orderId: order._id });
+            res.status(200).json({ orderId: order._id });
       } catch (error) {
             console.error(error);
-            res.status(500).json({ message: "Server error while placing order" });
+            res.status(500).json({ message: "Server error fetching order details" });
       }
 };
+
 
 export const getUserOrders = async (req, res) => {
       try {
