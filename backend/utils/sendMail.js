@@ -14,10 +14,7 @@ const transporter = nodemailer.createTransport({
       //   You can also use other SMTP options:
       host: process.env.EMAIL_HOST,
       port: process.env.EMAIL_PORT,
-      secure: false, // true for 465, false for other ports
-      tls: {
-            rejectUnauthorized: false,
-      },
+      secure: true, // true for 465, false for other ports
 });
 
 // Optionally, verify the connection (good for debugging)
