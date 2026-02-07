@@ -5,7 +5,6 @@ import Order from "../models/orderModel.js";
 import Cart from "../models/cartModel.js";
 
 export const handlePaystackWebhook = async (req, res) => {
-      const userId = req.userId;
       //verify the request
       const secret = process.env.PAYSTACK_SECRET_KEY;
       const hash = crypto.createHmac("sha512", secret).update(JSON.stringify(req.body)).digest("hex");
@@ -26,7 +25,6 @@ export const handlePaystackWebhook = async (req, res) => {
                   });
 
                   const verifiedPayment = response.data?.data;
-
                   const transactionStatus = verifiedPayment.status;
                   const transactionCurrency = verifiedPayment.currency;
                   const transactionChannel = verifiedPayment.channel;
@@ -34,7 +32,7 @@ export const handlePaystackWebhook = async (req, res) => {
 
                   const { order, user } = await Payment.findOne({ reference });
 
-                  //   console.log("The OrderId from Webhook: ", order);
+                  console.log("The OrderId from Webhook: ", user, order);
 
                   if (transactionStatus === "success") {
                         //Fulfill the order
@@ -48,16 +46,13 @@ export const handlePaystackWebhook = async (req, res) => {
                                     type: "charge",
                               },
                         );
+
+                        await Cart.deleteMany({ user });
                         //update order status
                         await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "paid", status: "processing" });
 
-                        // Clear user's cart after verifying payment
-                        await Cart.findOneAndDelete({ user: userId });
-
                         if (payment) console.log(`Payment ${payment._id} paid successfully.`);
-                  }
-
-                  if (transactionStatus === "processing") {
+                  } else if (transactionStatus === "processing") {
                         //Fulfill the order
                         const payment = await Payment.findOneAndUpdate({ reference }, { status: "processing" });
                         await Order.findOneAndUpdate({ _id: order }, { paymentStatus: "processing" });

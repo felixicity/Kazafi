@@ -62,12 +62,14 @@ export async function sendOrderStatus(order) {
                   subject: "Order Update Status",
                   html: `
                   <div style="font-family:sans-serif; text-align:center; padding: 20px;">
-                        <h1 style="margin-bottom: 20px;">Hi there 👋</h1>
+                        <h1 style="margin-bottom: 20px;">Order is ${order.status}</h1>
                         <p style="margin-bottom: 20px;">Your order PO-${order._id} ${order.status !== "delivered" ? "is" : "has been"} ${order.status}</p>
                         <p style="margin-bottom: 10px;">For any further question, all our customer service 040900005998093</p>
                   </div>
             `,
             });
+
+            console.log("Message sent: %s", info.messageId);
       } catch (error) {
             console.log("resend email error: ", error);
       }
